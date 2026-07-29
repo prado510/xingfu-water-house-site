@@ -26,59 +26,11 @@
 <main>
 
   <section class="section">
-    <p class="eyebrow">先體驗，再決定</p>
-    <span class="expo-badge">陪跑方案僅限本次加盟展，名額有限</span>
-    <h1>不是要你先付一大筆錢，是先讓你試營運看看</h1>
-    <p class="sub">陪跑方案是這次加盟展的限定專案，用意是讓總部與加盟主先透過實際經營互相確認合適，而不是收了錢就不管——生意差有保底、生意好全拿分潤、保證金到期或終止都全額退還。點開下面每個階段，一步一步看它怎麼運作。</p>
+    <p class="eyebrow">方案比較</p>
+    <h1>兩方案完整條件，一次看清楚</h1>
+    <p class="sub">陪跑方案為什麼存在、怎麼一步步運作，品牌故事頁已經完整說明；這裡直接列出兩個方案的完整數字，方便業務對照講解給加盟主聽。</p>
 
-    <div class="flow-layer">
-      <div class="flow-box" onclick="toggleFlow('f1')">
-        <div class="n">STAGE 1</div>
-        <h4>開始陪跑</h4>
-        <p>先試用，不是一次繳清綁死</p>
-        <div class="expand-hint">點看細節 ▾</div>
-      </div>
-      <div class="flow-box" onclick="toggleFlow('f2')">
-        <div class="n">STAGE 2</div>
-        <h4>履約期間</h4>
-        <p>每週維護、每月撥保底</p>
-        <div class="expand-hint">點看細節 ▾</div>
-      </div>
-      <div class="flow-box" onclick="toggleFlow('f3')">
-        <div class="n">STAGE 3</div>
-        <h4>合約結束</h4>
-        <p>三種收尾方式，都不吃虧</p>
-        <div class="expand-hint">點看細節 ▾</div>
-      </div>
-    </div>
-
-    <div id="f1" class="flow-detail">
-      設備租賃保證金 450,000 元不是總部的營運資金，是履約擔保——合約正常走完 4 年會全額退還。開幕前 3 個月總部還會加碼送水，幫忙拉高曝光跟初期人流，降低起步的空窗期。
-    </div>
-    <div id="f2" class="flow-detail">
-      加盟主每週固定維護機台一次；只要有做到，總部每月先撥 1/12 保證毛利給你，不必等年底。營業收入以設備計數系統、水電繳費單為準，隨時可以對帳，不是總部說了算。
-    </div>
-    <div id="f3" class="flow-detail">
-      三條路都設計成加盟主不吃虧：
-      <ul>
-        <li><strong>合約正常屆滿（4 年）</strong>：保證金 450,000 全額退還</li>
-        <li><strong>加盟主主動退約</strong>：依經營時間分級退還，越晚退越多（詳見下方退約試算）</li>
-        <li><strong>總部主動終止</strong>：保證金一樣全額退還，加盟主已有的保底與分潤權益不受影響</li>
-      </ul>
-      而且合約期間內，只要生意做起來，隨時可以申請升級為<strong>特許加盟方案</strong>（單向轉換，特許加盟方案不能再轉回陪跑方案——陪跑是這次加盟展的限定入門專案，不是長期存在的選項）。
-    </div>
-
-    <div class="trust-box">
-      <h3>業務可以這樣回答「這是不是吸金」的疑慮</h3>
-      <ul>
-        <li>錢流向哪裡查得到：營業收入以設備計數系統、讀表紀錄、水電繳費單為準，加盟主可以隨時對帳，不是總部口頭說了算。</li>
-        <li>保證金不是拿去周轉：合約明訂保證金只作履約擔保，不得任意動用，正常經營、合約終止都會退還或部分退還。</li>
-        <li>收益不是靠「拉人頭」：加盟主的收入來自加水站實際營業額分潤，跟有沒有再找到下一個加盟主完全無關。</li>
-        <li>退場機制寫在合約裡，不是事後才講：提前退約的退還比例、懲罰性違約金級距，簽約當下就白紙黑字列出來。</li>
-      </ul>
-    </div>
-
-    <div class="plan-cards" style="margin-top:20px">
+    <div class="plan-cards">
       <div class="plan-card featured">
         <span class="badge">本次加盟展限定</span>
         <h3>陪跑方案</h3>
@@ -187,15 +139,6 @@
 </main>
 
 <footer class="pagefoot">幸福水屋 業務培訓站 · 內部使用，方案細節以正式合約為準</footer>
-
-<script>
-function toggleFlow(id) {
-  document.querySelectorAll('.flow-detail').forEach(el => {
-    if (el.id !== id) el.classList.remove('open');
-  });
-  document.getElementById(id).classList.toggle('open');
-}
-</script>
 
 </body>
 </html>
