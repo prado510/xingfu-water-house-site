@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>幸福水屋｜業務培訓站 — 問答專區</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="brand">
+    <img src="assets/logo.svg" alt="幸福水屋 logo">
+    <div>幸福水屋
+      <span class="tag">業務培訓站 · 24H 共享淨水站</span>
+    </div>
+  </div>
+  <div class="navlinks">
+    <a href="index.html">品牌故事</a>
+    <a href="compare.html">方案比較</a>
+    <a href="calculator.html">營業額試算</a>
+    <a href="qa.html" class="active">問答專區</a>
+  </div>
+</nav>
+
+<main>
+
+  <section class="section">
+    <p class="eyebrow">問答專區</p>
+    <h1>加盟問答專區</h1>
+    <p class="sub">依分類尋找答案，或直接在下方輸入問題——下面的問答庫先給常見問題快速查閱，輸入框則會即時呼叫 AI，依照方案完整邏輯生成回答，也能理解你的追問。</p>
+
+    <input type="text" class="qa-search" id="searchBox" placeholder="輸入你的問題，例如：提前退約要付多少？" oninput="renderList()">
+
+    <div class="qa-tags" id="tagRow"></div>
+    <div id="qaList"></div>
+
+    <div class="qa-chatbox">
+      <input type="text" id="chatInput" placeholder="或者，直接問我任何關於方案的問題…" onkeydown="if(event.key==='Enter') askChat()">
+      <button class="btn" onclick="askChat()">送出</button>
+    </div>
+    <div id="chatAnswer" class="note-box" style="display:none;margin-top:12px;background:var(--brand-bg-soft);padding:14px;border-radius:10px;border-top:none"></div>
+  </section>
+
+</main>
+
+<footer class="pagefoot">幸福水屋 業務培訓站 · 內部使用，方案細節以正式合約為準</footer>
+
+<script>
+/*
+  下方 faqData 是常見問題的快速查閱清單（點了才展開，方便掃視）。
+  輸入框的即時問答則是真的呼叫後端 AI：前端呼叫 /api/ask，
+  後端（server.js）讀取 knowledge.md 當作 system prompt 呼叫 Claude API，
+  依方案完整邏輯即時生成回答，也能理解追問，不受限於這裡預先寫死的問答庫。
+*/
+
+const faqData = [
+  { cat: "方案選擇", q: "陪跑方案現在還能加入嗎？",
+    a: "陪跑方案是這次加盟展的限定招募專案，名額與期限有限，額滿或展期結束後就不再開放申請。這是總部先跟加盟主互相確認合適、再決定要不要長期合作的機制，不是常態存在的方案。" },
+  { cat: "方案選擇", q: "陪跑方案跟特許加盟方案可以互相轉換嗎？",
+    a: "只能單向從陪跑方案升級為特許加盟方案，特許加盟方案沒辦法轉回陪跑方案——陪跑僅限這次招募新加盟主使用。陪跑方案的加盟主在合約期間內，隨時可以申請升級，不限合約屆滿才能提出。轉換時須一次補足設備租賃費差額78,000＋加盟保證金40,000＋租金場地保證金15,000＋水電押金15,000，共148,000元。" },
+  { cat: "保證毛利", q: "保證毛利怎麼算？多久領一次？",
+    a: "陪跑方案以設備租賃保證金450,000元為基準：第1年12%（54,000）、第2年10%（45,000）、第3年8%（36,000）、第4年8%（36,000），每月先撥1/12給加盟主，年度結算時再核算是否需要補差額。" },
+  { cat: "保證毛利", q: "如果我生意不好，保證毛利會被收回嗎？",
+    a: "不會。只要每月維護有做到，就算年度分潤不足保證毛利，總部也不會要求退還已撥付的保證毛利——這是陪跑方案「加盟主穩賺不賠」的核心設計。" },
+  { cat: "分潤結算", q: "分潤怎麼分？什麼時候結算？",
+    a: "兩方案都是加盟主60%／總部40%。差別在於陪跑方案是年度結算（保證毛利先按月撥，年度再補差額），特許加盟方案是每月直接結算，不必等一整年。" },
+  { cat: "分潤結算", q: "陪跑方案的租金水電，誰出？",
+    a: "陪跑方案由總部代墊租金水電，計入門市年度損益，並在年度結算時從加盟主60%分潤中扣除，但不會加大保證毛利的門檻。特許加盟方案則是租金水電由加盟主自行負擔。" },
+  { cat: "維護義務", q: "每週維護沒做到，會怎麼樣？",
+    a: "陪跑方案要求加盟主每週固定維護機台一次並回報。當月只要有一次沒配合維護，該月的保證毛利就會被取消，不得要求補發，但不影響年度營業收入及分潤結算。" },
+  { cat: "維護義務", q: "機台維修的費用算誰的？",
+    a: "正常耗損的維修成本由總部負擔；但如果是加盟主自己不當操作或惡意破壞造成的損壞，修復費用須由加盟主自行負擔。" },
+  { cat: "提前退約", q: "提前退約，設備保證金拿得回來多少？",
+    a: "依經營時間分級退還（未滿1年50%＝225,000、滿1-2年60%＝270,000、滿2-3年70%＝315,000、滿3-4年80%＝360,000、滿4年正常到期100%＝450,000），但退還金額還要再扣除已撥保證毛利與已代墊租金水電。舉例：經營滿18個月退約，應退270,000，扣掉已撥保證毛利76,500、已代墊租金水電126,000，加盟主實拿67,500元。經營越久、代墊款累積越多，實拿金額不一定跟著等比例增加，詳細試算見方案比較頁。" },
+  { cat: "提前退約", q: "總部可以主動終止合約嗎？",
+    a: "可以，總部保留隨時終止合約的彈性。但若是總部主動終止，設備租賃保證金450,000元全額退還加盟主，保證毛利與租金水電回補也照常進行，加盟主權益不受影響。" },
+];
+
+let activeTag = "全部";
+
+function renderTags() {
+  const tags = ["全部", ...new Set(faqData.map(f => f.cat))];
+  const row = document.getElementById('tagRow');
+  row.innerHTML = tags.map(t =>
+    `<span class="tag-chip ${t === activeTag ? 'active' : ''}" onclick="selectTag('${t}')">${t}</span>`
+  ).join('');
+}
+
+function selectTag(t) {
+  activeTag = t;
+  renderTags();
+  renderList();
+}
+
+function renderList() {
+  const kw = document.getElementById('searchBox').value.trim();
+  const list = document.getElementById('qaList');
+  const filtered = faqData.filter(f =>
+    (activeTag === "全部" || f.cat === activeTag) &&
+    (kw === "" || f.q.includes(kw) || f.a.includes(kw))
+  );
+  list.innerHTML = filtered.map((f, i) => `
+    <div class="qa-item" id="qa-${i}">
+      <div class="qa-q" onclick="toggle(${i})">${f.q}<span>▾</span></div>
+      <div class="qa-a">${f.a}</div>
+    </div>
+  `).join('') || '<p class="sub">沒有符合的問題，試試下方直接輸入問題。</p>';
+}
+
+function toggle(i) {
+  document.getElementById('qa-' + i).classList.toggle('open');
+}
+
+async function askChat() {
+  const input = document.getElementById('chatInput');
+  const q = input.value.trim();
+  const box = document.getElementById('chatAnswer');
+  if (!q) return;
+
+  box.style.display = 'block';
+  box.innerHTML = '思考中…';
+  input.value = '';
+
+  try {
+    const res = await fetch('/api/ask', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: q }),
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      box.innerHTML = `<strong style="color:var(--danger)">${data.error || 'AI 回應失敗'}</strong><br>你可以先參考上方的問答庫，或直接請教總部窗口。`;
+      return;
+    }
+    box.innerHTML = `<strong style="color:var(--brand-pink-dark)">AI 回答：</strong><br>${data.answer.replace(/\n/g, '<br>')}`;
+  } catch (err) {
+    box.innerHTML = `<strong style="color:var(--danger)">連不上 AI 服務。</strong><br>請確認 server.js 是否已啟動（npm start），或先參考上方的問答庫。`;
+  }
+}
+
+renderTags();
+renderList();
+</script>
+
+</body>
+</html>

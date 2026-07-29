@@ -1,0 +1,13 @@
+{
+  "name": "xingfu-water-house-site",
+  "version": "1.0.0",
+  "description": "幸福水屋 業務培訓站 — 靜態網頁 + AI 問答後端",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
+    "express": "^4.19.2"
+  }
+}

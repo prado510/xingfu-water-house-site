@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>幸福水屋｜業務培訓站 — 營業額試算</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="brand">
+    <img src="assets/logo.svg" alt="幸福水屋 logo">
+    <div>幸福水屋
+      <span class="tag">業務培訓站 · 24H 共享淨水站</span>
+    </div>
+  </div>
+  <div class="navlinks">
+    <a href="index.html">品牌故事</a>
+    <a href="compare.html">方案比較</a>
+    <a href="calculator.html" class="active">營業額試算</a>
+    <a href="qa.html">問答專區</a>
+  </div>
+</nav>
+
+<main>
+
+  <section class="section">
+    <p class="eyebrow">跟加盟主一起算</p>
+    <h1>營業額試算器</h1>
+    <p class="sub">輸入預估月營業額，立即看到兩種方案下加盟主全年實際能拿到多少錢。試算僅供業務對談參考，實際請依正式合約與門市真實租約計算。</p>
+
+    <div class="calc-toggle">
+      <button id="btnPeiPao" class="active" onclick="setPlan('peipao')">陪跑方案（年度結算）</button>
+      <button id="btnTexu" onclick="setPlan('texu')">特許加盟方案（月結）</button>
+    </div>
+
+    <div id="yearRow" class="calc-row">
+      <label>合約年度</label>
+      <select id="year" onchange="calc()" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--brand-line)">
+        <option value="1">第 1 年（保證毛利 12%，54,000）</option>
+        <option value="2">第 2 年（保證毛利 10%，45,000）</option>
+        <option value="3">第 3 年（保證毛利 8%，36,000）</option>
+        <option value="4">第 4 年（保證毛利 8%，36,000）</option>
+      </select>
+    </div>
+
+    <div class="calc-row">
+      <label>月營業額</label>
+      <input type="range" id="revenue" min="5000" max="80000" step="1000" value="20000" oninput="syncRevenue(this.value); calc()">
+      <span class="val" id="revenueVal">20,000 元</span>
+    </div>
+
+    <div class="calc-row">
+      <label>月租金</label>
+      <input type="number" id="rent" value="5000" oninput="calc()">
+      <label style="min-width:60px">月水電</label>
+      <input type="number" id="utility" value="2000" oninput="calc()">
+    </div>
+
+    <div id="peipaoResult">
+      <div class="result-grid">
+        <div class="result-card"><div class="label">年營業額</div><div class="value" id="r_annual">240,000</div></div>
+        <div class="result-card"><div class="label">加盟主分潤（60%）</div><div class="value" id="r_share">144,000</div></div>
+        <div class="result-card"><div class="label">減：總部代墊租金水電</div><div class="value" id="r_overhead">－84,000</div></div>
+        <div class="result-card"><div class="label">可分配淨利分潤</div><div class="value" id="r_net">60,000</div></div>
+      </div>
+      <div class="result-grid">
+        <div class="result-card"><div class="label">已按月撥付保證毛利</div><div class="value" id="r_guarantee">54,000</div></div>
+        <div class="result-card highlight"><div class="label">年度結算再補撥</div><div class="value" id="r_extra">6,000</div></div>
+      </div>
+      <div class="result-card highlight" style="text-align:center;padding:18px">
+        <div class="label">加盟主全年實得</div>
+        <div class="value" id="r_final" style="font-size:26px">60,000</div>
+      </div>
+      <p class="note-box" id="r_note">分潤高於保證毛利：全年實得＝保證毛利已撥金額＋結算補撥差額，等於完整淨利分潤。</p>
+
+      <div class="chart-wrap">
+        <canvas id="chart" width="880" height="260"></canvas>
+        <div class="chart-legend">
+          <span class="l1">全年實得（隨營業額變化）</span>
+          <span class="l2">目前月營業額位置</span>
+        </div>
+        <p class="note-box" id="chartNote" style="border-top:none;padding-top:0"></p>
+      </div>
+    </div>
+
+    <div id="texuResult" style="display:none">
+      <div class="result-grid">
+        <div class="result-card"><div class="label">年營業額</div><div class="value" id="t_annual">240,000</div></div>
+        <div class="result-card"><div class="label">加盟主分潤（60%，每月結算）</div><div class="value" id="t_share">144,000</div></div>
+        <div class="result-card"><div class="label">減：加盟主自付租金水電</div><div class="value" id="t_overhead">－84,000</div></div>
+        <div class="result-card highlight"><div class="label">加盟主全年實得淨利</div><div class="value" id="t_final">60,000</div></div>
+      </div>
+      <p class="note-box">特許加盟方案無保證毛利，租金水電由加盟主自行負擔（租金年繳、水電季繳），每月依 60/40 直接結算分潤，不必等年度結算。</p>
+    </div>
+
+  </section>
+
+  <section class="section">
+    <h2>三種情境快速對照（陪跑方案第 1 年，保證毛利 54,000）</h2>
+    <table class="plan-table">
+      <thead><tr><th>情境</th><th>月營業額</th><th>年營業額</th><th>60% 分潤</th><th>全年實得</th></tr></thead>
+      <tbody>
+        <tr><td>A · 不賺錢</td><td>5,000</td><td>60,000</td><td>36,000</td><td class="hl">54,000（保底）</td></tr>
+        <tr><td>B · 打平有結餘</td><td>20,000</td><td>240,000</td><td>144,000</td><td class="hl">60,000</td></tr>
+        <tr><td>C · 獲利非常好</td><td>30,000</td><td>360,000</td><td>216,000</td><td class="hl">132,000</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+</main>
+
+<footer class="pagefoot">幸福水屋 業務培訓站 · 內部使用，方案細節以正式合約為準</footer>
+
+<script>
+let currentPlan = 'peipao';
+const guaranteeByYear = { "1": 54000, "2": 45000, "3": 36000, "4": 36000 };
+
+function fmt(n) {
+  const rounded = Math.round(n);
+  return rounded.toLocaleString('zh-TW');
+}
+
+function setPlan(plan) {
+  currentPlan = plan;
+  document.getElementById('btnPeiPao').classList.toggle('active', plan === 'peipao');
+  document.getElementById('btnTexu').classList.toggle('active', plan === 'texu');
+  document.getElementById('yearRow').style.display = plan === 'peipao' ? 'flex' : 'none';
+  document.getElementById('peipaoResult').style.display = plan === 'peipao' ? 'block' : 'none';
+  document.getElementById('texuResult').style.display = plan === 'texu' ? 'block' : 'none';
+  calc();
+}
+
+function syncRevenue(v) {
+  document.getElementById('revenueVal').textContent = fmt(v) + ' 元';
+}
+
+function calc() {
+  const monthly = Number(document.getElementById('revenue').value);
+  const rent = Number(document.getElementById('rent').value) || 0;
+  const utility = Number(document.getElementById('utility').value) || 0;
+  const annual = monthly * 12;
+  const share = annual * 0.6;
+  const overhead = (rent + utility) * 12;
+
+  if (currentPlan === 'peipao') {
+    const year = document.getElementById('year').value;
+    const guarantee = guaranteeByYear[year];
+    const net = share - overhead;
+    let extra = net - guarantee;
+    if (extra < 0) extra = 0;
+    const final = net < guarantee ? guarantee : net;
+
+    document.getElementById('r_annual').textContent = fmt(annual);
+    document.getElementById('r_share').textContent = fmt(share);
+    document.getElementById('r_overhead').textContent = '－' + fmt(overhead);
+    document.getElementById('r_net').textContent = fmt(net);
+    document.getElementById('r_guarantee').textContent = fmt(guarantee);
+    document.getElementById('r_extra').textContent = fmt(extra);
+    document.getElementById('r_final').textContent = fmt(final);
+
+    document.getElementById('r_note').textContent = net < guarantee
+      ? '分潤不足保證毛利：保證毛利已透過每月先撥全數到位，總部無需再補款，加盟主全年實得＝保證毛利本身。'
+      : '分潤高於保證毛利：全年實得＝保證毛利已撥金額＋結算補撥差額，等於完整淨利分潤。';
+
+    drawChart(monthly, guarantee, rent, utility);
+  } else {
+    const final = share - overhead;
+    document.getElementById('t_annual').textContent = fmt(annual);
+    document.getElementById('t_share').textContent = fmt(share);
+    document.getElementById('t_overhead').textContent = '－' + fmt(overhead);
+    document.getElementById('t_final').textContent = fmt(final);
+  }
+}
+
+function drawChart(currentMonthly, guarantee, rent, utility) {
+  const canvas = document.getElementById('chart');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const padL = 70, padB = 34, padT = 16, padR = 16;
+  ctx.clearRect(0, 0, W, H);
+
+  const minRev = 5000, maxRev = 80000;
+  const overhead = (rent + utility) * 12;
+
+  // 全年實得 as a function of monthly revenue
+  function finalAt(monthly) {
+    const net = monthly * 12 * 0.6 - overhead;
+    return net < guarantee ? guarantee : net;
+  }
+
+  // breakeven monthly revenue where net crosses guarantee
+  const breakevenMonthly = (guarantee + overhead) / 7.2;
+
+  const points = [];
+  for (let m = minRev; m <= maxRev; m += 1000) points.push([m, finalAt(m)]);
+
+  const maxY = Math.max(...points.map(p => p[1])) * 1.1;
+  const minY = 0;
+
+  function x(m) { return padL + (m - minRev) / (maxRev - minRev) * (W - padL - padR); }
+  function y(v) { return H - padB - (v - minY) / (maxY - minY) * (H - padT - padB); }
+
+  // axes
+  ctx.strokeStyle = '#E3B9C8';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(padL, padT); ctx.lineTo(padL, H - padB); ctx.lineTo(W - padR, H - padB);
+  ctx.stroke();
+
+  ctx.fillStyle = '#7A5A66';
+  ctx.font = '11px sans-serif';
+  ctx.fillText(fmt(maxY), 8, y(maxY) + 4);
+  ctx.fillText('0', 8, y(0) + 4);
+  ctx.fillText(fmt(minRev), x(minRev) - 10, H - padB + 16);
+  ctx.fillText(fmt(maxRev), x(maxRev) - 20, H - padB + 16);
+
+  // breakeven dashed line
+  if (breakevenMonthly > minRev && breakevenMonthly < maxRev) {
+    ctx.strokeStyle = '#1B4B73';
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(x(breakevenMonthly), padT);
+    ctx.lineTo(x(breakevenMonthly), H - padB);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#1B4B73';
+    ctx.fillText('約 ' + fmt(breakevenMonthly) + ' 元開始超過保底', x(breakevenMonthly) + 6, padT + 12);
+  }
+
+  // line
+  ctx.strokeStyle = '#D6236F';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  points.forEach(([m, v], i) => {
+    const px = x(m), py = y(v);
+    if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+  });
+  ctx.stroke();
+
+  // current position marker
+  const curY = finalAt(currentMonthly);
+  ctx.fillStyle = '#1B4B73';
+  ctx.beginPath();
+  ctx.arc(x(currentMonthly), y(curY), 5, 0, Math.PI * 2);
+  ctx.fill();
+
+  document.getElementById('chartNote').textContent =
+    '月營業額約在 ' + fmt(breakevenMonthly) + ' 元前，全年實得都固定等於保證毛利 ' + fmt(guarantee) +
+    '（曲線是平的）；超過這個門檻後，營業額每多一點，全年實得就跟著往上走，加盟主開始拿到完整的淨利分潤。';
+}
+
+calc();
+</script>
+
+</body>
+</html>
