@@ -15,11 +15,13 @@
       <span class="tag">業務培訓站 · 24H 共享淨水站</span>
     </div>
   </div>
+  <button class="nav-toggle" onclick="toggleNav()" aria-label="選單"><span></span><span></span><span></span></button>
   <div class="navlinks">
     <a href="index.html" class="active">品牌故事</a>
     <a href="compare.html">方案比較</a>
     <a href="calculator.html">營業額試算</a>
     <a href="qa.html">問答專區</a>
+    <a href="perspectives.html">多元觀點</a>
   </div>
 </nav>
 
@@ -27,7 +29,7 @@
 
   <section class="section">
     <p class="eyebrow">第一段 · 隱形的商機</p>
-    <h1>不一樣的生意，綿綿不絕的賺錢方式</h1>
+    <h1>不一樣的生意，源源不絕的賺錢方式</h1>
     <p class="sub">這是一門邏輯跟一般開店創業完全不同的生意。加水站不是服務特定族群，而是服務每一個需要喝水的人——每天都有人需要喝水，所以每天都有市場。真正不同的，不是產品，而是商業模式：餐飲經營的是流行，加水站經營的是每天都會發生的生活需求。</p>
 
     <div class="compare-grid">
@@ -96,7 +98,22 @@
         <div class="item"><div class="tick">在地經營</div>熟悉商圈，持續推廣</div>
       </div>
     </div>
-    <p class="sub" style="margin-bottom:0">這就是為什麼幸福水屋現在積極找的，不是能出錢的投資人，而是願意留在當地、把服務做好的夥伴。</p>
+    <div class="pain-banner" style="margin-top:16px">
+      <p class="lead">共享淨水站的優勢：總部出機器，加盟主出心力</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--brand-pink-dark);margin-bottom:6px">總部負責</div>
+          <div style="font-size:13px;color:var(--text-sub);line-height:1.8">設備所有權與硬體成本<br>教育訓練與營運制度<br>零件、耗材與正常維修<br>品牌授權與推廣資源</div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--brand-pink-dark);margin-bottom:6px">加盟主負責</div>
+          <div style="font-size:13px;color:var(--text-sub);line-height:1.8">每週巡檢與現場維護<br>在地推廣、跟社區搏感情<br>消費者服務與即時應對<br>顧好設備的清潔與運作</div>
+        </div>
+      </div>
+      <p class="sub" style="margin:14px 0 0">設備所有權跟硬體風險都在總部身上，加盟主不用自己扛設備成本；總部也沒辦法自己顧到每個角落，需要加盟主的在地投入——這是分工雙贏，不是誰佔誰便宜。</p>
+    </div>
+
+    <p class="sub" style="margin-bottom:0;margin-top:14px">這就是為什麼幸福水屋現在積極找的，不是能出錢的投資人，而是願意留在當地、把服務做好的夥伴。</p>
   </section>
 
   <section class="section">
@@ -188,6 +205,7 @@
 
 <footer class="pagefoot">幸福水屋 業務培訓站 · 內部使用，方案細節以正式合約為準</footer>
 
+<script src="assets/nav.js"></script>
 <script>
 function toggleFlow(id) {
   document.querySelectorAll('.flow-detail').forEach(el => {

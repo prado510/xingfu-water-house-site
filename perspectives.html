@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>幸福水屋｜業務培訓站 — 多元觀點</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="brand">
+    <img src="assets/logo.svg" alt="幸福水屋 logo">
+    <div>幸福水屋
+      <span class="tag">業務培訓站 · 24H 共享淨水站</span>
+    </div>
+  </div>
+  <button class="nav-toggle" onclick="toggleNav()" aria-label="選單"><span></span><span></span><span></span></button>
+  <div class="navlinks">
+    <a href="index.html">品牌故事</a>
+    <a href="compare.html">方案比較</a>
+    <a href="calculator.html">營業額試算</a>
+    <a href="qa.html">問答專區</a>
+    <a href="perspectives.html" class="active">多元觀點</a>
+  </div>
+</nav>
+
+<main>
+
+  <section class="section">
+    <p class="eyebrow">多元觀點</p>
+    <h1>同一個方案，用對方最能聽得進去的方式說</h1>
+    <p class="sub">加盟主的背景不同，在意的重點也不一樣。點選下面最貼近對方處境的角度，同一套陪跑方案就會換一種說法，方便業務現場切換。</p>
+
+    <div class="calc-toggle" style="flex-wrap:wrap">
+      <button id="btnStartup" class="active" onclick="setRole('startup')">跟一般創業比</button>
+      <button id="btnInvest" onclick="setRole('invest')">投資報酬角度</button>
+      <button id="btnSaving" onclick="setRole('saving')">儲蓄角度</button>
+      <button id="btnTime" onclick="setRole('time')">時間自由角度</button>
+    </div>
+
+    <div id="view-startup">
+      <h2>跟一般創業比，真正曝險的錢少很多</h2>
+      <p class="sub">對方如果在猶豫「開店會不會很燒錢、風險很高」，用這個角度講：一般開店創業要扛的成本跟不確定性，加水站幾乎都不用扛。</p>
+      <div class="compare-grid">
+        <div class="compare-col bad">
+          <h3>一般開店創業</h3>
+          <ul>
+            <li>裝潢、設備動輒上百萬元</li>
+            <li>加盟金幾乎全數不可退還</li>
+            <li>要顧店、要進貨、要處理人事</li>
+            <li>受景氣、流行影響大</li>
+            <li>生意不好也要繼續背租金人事</li>
+          </ul>
+        </div>
+        <div class="compare-col good">
+          <h3>加盟幸福水屋（陪跑方案）</h3>
+          <ul>
+            <li>真正花掉不會拿回的錢只有 106,800 元</li>
+            <li>設備租賃保證金 450,000 元屬於履約擔保，條件退還</li>
+            <li>不用自己顧店，每週固定維護即可</li>
+            <li>民生剛性需求，不受流行影響</li>
+            <li>生意不好也有保證毛利兜底</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note-box">一句話收尾：「你在外面隨便開一間店，光押金裝潢就可能砸下上百萬還不一定回得來；這裡真正的沉沒成本只有十萬出頭，其他都是有條件拿得回來的錢。」</p>
+    </div>
+
+    <div id="view-invest" style="display:none">
+      <h2>把保證金看成一筆有本金保障的投入</h2>
+      <p class="sub">對方如果習慣用「報酬率」思考，用這個角度講：設備租賃保證金 450,000 元可以類比成本金，陪跑方案提供的是有保底、還有上檔空間的報酬結構。</p>
+      <div class="result-grid">
+        <div class="result-card"><div class="label">本金（設備租賃保證金）</div><div class="value">450,000</div></div>
+        <div class="result-card highlight"><div class="label">第 1 年保證報酬率</div><div class="value">12%</div></div>
+        <div class="result-card"><div class="label">第 2 年保證報酬率</div><div class="value">10%</div></div>
+        <div class="result-card"><div class="label">第 3～4 年保證報酬率</div><div class="value">8%</div></div>
+      </div>
+      <p class="sub">而且這不是「保底就是天花板」——生意做起來，年度結算時分潤會補到超過保底的差額，等於報酬率沒有上限；本金（保證金）在合約走完 4 年後全額退還。</p>
+      <p class="note-box">提醒業務：這是加盟合作關係，不是金融商品，講的時候用「類比」的方式幫對方理解報酬結構，不要用「保證獲利」「投資報酬率」這種容易被誤認為金融商品招攬用語的講法。</p>
+    </div>
+
+    <div id="view-saving" style="display:none">
+      <h2>比把錢放定存更有感的選擇</h2>
+      <p class="sub">對方如果本來就打算把一筆錢放銀行定存，用這個角度講：同樣是「錢放著、到期領回」的概念，陪跑方案第一年的保底比率比一般定存利率高出不少，而且加盟主還親自參與經營、能拿到超額分潤。</p>
+      <div class="result-grid">
+        <div class="result-card"><div class="label">銀行定存參考利率</div><div class="value" style="font-size:20px">約 1.5～2%</div></div>
+        <div class="result-card highlight"><div class="label">陪跑方案第 1 年保底比率</div><div class="value" style="font-size:20px">12%</div></div>
+      </div>
+      <p class="sub">差別在於：定存到期只領利息；陪跑方案除了保底之外，只要生意做起來，還能拿到超過保底的分潤差額——上限比定存高很多。</p>
+      <p class="note-box">提醒業務：這只是幫助對方理解「保底比率」的參考對比，陪跑方案是加盟經營合作，不是銀行存款，沒有存款保險保障，講的時候要講清楚差異，不要讓對方誤以為是同一種金融商品。</p>
+    </div>
+
+    <div id="view-time" style="display:none">
+      <h2>用少量時間，換一份持續的收入</h2>
+      <p class="sub">對方如果最在意的是「我還有正職／還要顧家，沒空天天顧店」，用這個角度講：這是一門一旦上手之後，就不太需要投入大量時間的生意。</p>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="num">3～6</div><div class="label">起步期建議投入月數</div></div>
+        <div class="stat-card"><div class="num">約1</div><div class="label">起步期每天投入小時數</div></div>
+        <div class="stat-card"><div class="num">1次</div><div class="label">上手後每週固定維護次數</div></div>
+      </div>
+      <p class="sub">真正需要花心力的只有剛開始的 3 到 6 個月：每天花大約 1 小時做試喝推廣、把人流帶進來。陪跑方案就是設計來找到願意在這段起步期投入的加盟主——就算這段時間生意還沒起來，一樣有保證毛利可以拿，不會白忙；等站點穩定之後，每週固定維護一次就能繼續維持營運。</p>
+      <p class="note-box">一句話收尾：「先花半年、每天一小時把生意帶起來，之後它會回過頭來養你，而不是你一直在養它。」</p>
+    </div>
+
+  </section>
+
+</main>
+
+<footer class="pagefoot">幸福水屋 業務培訓站 · 內部使用，方案細節以正式合約為準</footer>
+
+<script src="assets/nav.js"></script>
+<script>
+function setRole(role) {
+  const roles = ['startup', 'invest', 'saving', 'time'];
+  const btnIds = { startup: 'btnStartup', invest: 'btnInvest', saving: 'btnSaving', time: 'btnTime' };
+  roles.forEach(r => {
+    document.getElementById('view-' + r).style.display = r === role ? 'block' : 'none';
+    document.getElementById(btnIds[r]).classList.toggle('active', r === role);
+  });
+}
+</script>
+
+</body>
+</html>

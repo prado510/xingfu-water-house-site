@@ -15,11 +15,13 @@
       <span class="tag">業務培訓站 · 24H 共享淨水站</span>
     </div>
   </div>
+  <button class="nav-toggle" onclick="toggleNav()" aria-label="選單"><span></span><span></span><span></span></button>
   <div class="navlinks">
     <a href="index.html">品牌故事</a>
     <a href="compare.html" class="active">方案比較</a>
     <a href="calculator.html">營業額試算</a>
     <a href="qa.html">問答專區</a>
+    <a href="perspectives.html">多元觀點</a>
   </div>
 </nav>
 
@@ -130,6 +132,32 @@
       </tbody>
     </table>
     <p class="note-box" style="margin-top:10px">最後一個例子要老實跟加盟主說清楚：經營越久、總部已經代墊的租金水電累積越多，如果分潤本來就不夠高，退約時反而可能要倒貼一小筆差額給總部。這不是總部想佔便宜，而是代墊款本來就是加盟主自己的門市成本，退約時得算清楚——先講清楚這一點，比事後才發現更能取得信任。</p>
+
+    <div style="background:var(--brand-bg-soft);border-radius:12px;padding:18px;margin-top:20px">
+      <h3 style="margin:0 0 12px;font-size:15px;color:var(--brand-maroon)">互動試算：我在第幾個月退出，能拿回多少？</h3>
+      <div class="calc-row">
+        <label>退出月份</label>
+        <input type="range" id="exitMonth" min="1" max="48" step="1" value="18" oninput="syncExitMonth(this.value); calcExit()">
+        <span class="val" id="exitMonthVal">第 18 個月</span>
+      </div>
+      <div class="calc-row">
+        <label>月租金</label>
+        <input type="number" id="exitRent" value="5000" oninput="calcExit()">
+        <label style="min-width:60px">月水電</label>
+        <input type="number" id="exitUtility" value="2000" oninput="calcExit()">
+      </div>
+      <div class="result-grid">
+        <div class="result-card"><div class="label">適用退約級距</div><div class="value" id="e_tier" style="font-size:15px">-</div></div>
+        <div class="result-card"><div class="label">應退還金額</div><div class="value" id="e_base">-</div></div>
+        <div class="result-card"><div class="label">減：已撥保證毛利</div><div class="value" id="e_guarantee">-</div></div>
+        <div class="result-card"><div class="label">減：已代墊租金水電</div><div class="value" id="e_overhead">-</div></div>
+      </div>
+      <div class="result-card highlight" style="text-align:center;padding:18px;margin-top:4px">
+        <div class="label">加盟主最終實拿</div>
+        <div class="value" id="e_final" style="font-size:26px">-</div>
+      </div>
+      <p class="note-box" style="margin-top:12px">這裡的試算是「清算已代墊款項」的邏輯（應退還金額 － 已撥保證毛利 － 已代墊租金水電），不會額外加回該年度的分潤——完整年度的分潤補撥要透過年度結算辦理，不是在退場清算裡處理。滿4年（第48個月）視為合約正常屆滿，保證金全額退還，不適用上述扣除公式。</p>
+    </div>
   </section>
 
   <div class="cta-row">
@@ -139,6 +167,69 @@
 </main>
 
 <footer class="pagefoot">幸福水屋 業務培訓站 · 內部使用，方案細節以正式合約為準</footer>
+
+<script src="assets/nav.js"></script>
+<script>
+function fmt(n) {
+  return Math.round(n).toLocaleString('zh-TW');
+}
+
+function syncExitMonth(v) {
+  document.getElementById('exitMonthVal').textContent = '第 ' + v + ' 個月';
+}
+
+function calcExit() {
+  const m = Number(document.getElementById('exitMonth').value);
+  const rent = Number(document.getElementById('exitRent').value) || 0;
+  const utility = Number(document.getElementById('exitUtility').value) || 0;
+  const monthlyOverhead = rent + utility;
+
+  if (m >= 48) {
+    document.getElementById('e_tier').textContent = '滿四年（正常屆滿，100%）';
+    document.getElementById('e_base').textContent = fmt(450000);
+    document.getElementById('e_guarantee').textContent = '不適用（正常屆滿）';
+    document.getElementById('e_overhead').textContent = '不適用（正常屆滿）';
+    const finalEl = document.getElementById('e_final');
+    finalEl.textContent = fmt(450000);
+    finalEl.style.color = 'var(--success)';
+    return;
+  }
+
+  let base, tierLabel;
+  if (m < 12) { base = 225000; tierLabel = '未滿一年（50%）'; }
+  else if (m < 24) { base = 270000; tierLabel = '滿一年～未滿兩年（60%）'; }
+  else if (m < 36) { base = 315000; tierLabel = '滿兩年～未滿三年（70%）'; }
+  else { base = 360000; tierLabel = '滿三年～未滿四年（80%）'; }
+
+  const guaranteeRates = [4500, 3750, 3000, 3000];
+  let guaranteePaid = 0;
+  let remaining = m;
+  for (let y = 0; y < 4 && remaining > 0; y++) {
+    const take = Math.min(12, remaining);
+    guaranteePaid += take * guaranteeRates[y];
+    remaining -= take;
+  }
+
+  const overheadPaid = m * monthlyOverhead;
+  const final = base - guaranteePaid - overheadPaid;
+
+  document.getElementById('e_tier').textContent = tierLabel;
+  document.getElementById('e_base').textContent = fmt(base);
+  document.getElementById('e_guarantee').textContent = '－' + fmt(guaranteePaid);
+  document.getElementById('e_overhead').textContent = '－' + fmt(overheadPaid);
+
+  const finalEl = document.getElementById('e_final');
+  if (final < 0) {
+    finalEl.textContent = '－' + fmt(Math.abs(final)) + '（須補足給總部）';
+    finalEl.style.color = 'var(--danger)';
+  } else {
+    finalEl.textContent = fmt(final);
+    finalEl.style.color = 'var(--success)';
+  }
+}
+
+calcExit();
+</script>
 
 </body>
 </html>
