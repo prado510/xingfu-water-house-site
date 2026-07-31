@@ -30,7 +30,7 @@
   <section class="section">
     <p class="eyebrow">跟加盟主一起算</p>
     <h1>營業額試算器</h1>
-    <p class="sub">輸入預估月營業額，立即看到兩種方案下加盟主全年實際能拿到多少錢。試算僅供業務對談參考，實際請依正式合約與門市真實租約計算。</p>
+    <p class="sub">拖動下面的滑桿調整預估月營業額與客單價，立即看到兩種方案下加盟主全年實際能拿到多少錢。試算僅供業務對談參考，實際請依正式合約與門市真實租約計算。</p>
 
     <div class="calc-toggle">
       <button id="btnPeiPao" class="active" onclick="setPlan('peipao')">陪跑方案（年度結算）</button>
@@ -39,7 +39,7 @@
 
     <div id="yearRow" class="calc-row">
       <label>合約年度</label>
-      <select id="year" onchange="calc()" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--brand-line)">
+      <select id="year" onchange="calc()">
         <option value="1">第 1 年（保證毛利 12%，54,000）</option>
         <option value="2">第 2 年（保證毛利 10%，45,000）</option>
         <option value="3">第 3 年（保證毛利 8%，36,000）</option>
@@ -47,50 +47,65 @@
       </select>
     </div>
 
-    <div class="calc-row">
-      <label>月營業額</label>
-      <input type="range" id="revenue" min="5000" max="80000" step="1000" value="20000" oninput="syncRevenue(this.value); calc()">
-      <span class="val" id="revenueVal">20,000 元</span>
-    </div>
-
-    <div class="calc-row">
-      <label>月租金</label>
-      <input type="number" id="rent" value="5000" oninput="calc()">
-      <label style="min-width:60px">月水電</label>
-      <input type="number" id="utility" value="2000" oninput="calc()">
-    </div>
-
-    <div style="background:var(--brand-bg-soft);border-radius:12px;padding:16px;margin-bottom:16px">
-      <div style="font-size:13px;color:var(--text-sub);margin-bottom:10px">這個營業額，大概需要多少人來消費？（假設每人每週固定加水一次、一次約 20 公升，兩個方案都適用）</div>
-      <div class="calc-row" style="margin-bottom:12px">
-        <label>平均客單價</label>
-        <input type="number" id="avgSpend" value="20" oninput="calc()" style="width:100px">
-        <span style="font-size:13px;color:var(--text-sub)">元／次（業務可自行調整）</span>
+    <div class="calc-slider">
+      <div class="slider-head">
+        <label for="revenue">月營業額</label>
+        <span class="val" id="revenueVal">20,000 元</span>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px">
-        <div><div style="font-size:20px;font-weight:700;color:var(--brand-pink-dark)" id="r_daily_users">-</div><div style="font-size:12px;color:var(--text-sub)">平均每天約需要（人次）</div></div>
-        <div><div style="font-size:20px;font-weight:700;color:var(--brand-pink-dark)" id="r_weekly_users">-</div><div style="font-size:12px;color:var(--text-sub)">每週約需要（不重複人數）</div></div>
-        <div><div style="font-size:20px;font-weight:700;color:var(--brand-pink-dark)" id="r_monthly_users">-</div><div style="font-size:12px;color:var(--text-sub)">相當於每月累計（人次）</div></div>
+      <input type="range" id="revenue" min="5000" max="80000" step="1000" value="20000"
+             oninput="syncRevenue(this.value); calc()">
+      <div class="slider-scale"><span>5,000</span><span>80,000</span></div>
+    </div>
+
+    <div class="calc-row calc-row-2col">
+      <div class="calc-field">
+        <label for="rent">月租金</label>
+        <input type="number" id="rent" value="5000" inputmode="numeric" oninput="calc()">
+      </div>
+      <div class="calc-field">
+        <label for="utility">月水電</label>
+        <input type="number" id="utility" value="2000" inputmode="numeric" oninput="calc()">
+      </div>
+    </div>
+
+    <div class="demand-box">
+      <div class="demand-intro">這個營業額，大概需要多少人來消費？（假設每人每週固定加水一次、一次約 20 公升，兩個方案都適用）</div>
+
+      <div class="calc-slider">
+        <div class="slider-head">
+          <label for="avgSpend">平均客單價</label>
+          <span class="val" id="avgSpendVal">20 元／次</span>
+        </div>
+        <input type="range" id="avgSpend" min="10" max="60" step="1" value="20"
+               oninput="syncSpend(this.value); calc()">
+        <div class="slider-scale"><span>10 元</span><span>業務可自行調整</span><span>60 元</span></div>
+      </div>
+
+      <div class="demand-grid">
+        <div><div class="num" id="r_daily_users">-</div><div class="cap">平均每天約需要（人次）</div></div>
+        <div><div class="num" id="r_weekly_users">-</div><div class="cap">每週約需要（不重複人數）</div></div>
+        <div><div class="num" id="r_monthly_users">-</div><div class="cap">相當於每月累計（人次）</div></div>
       </div>
       <p class="note-box" style="margin-top:10px;border-top:none;padding-top:0">因為每人一週大約固定回來加一次水，「每週不重複人數」大致就等於你在社區裡需要累積的固定客源人數——只要是會固定回購的老客戶，並不需要每天都找新的人，這就是為什麼加水站的生意比想像中好上手。</p>
     </div>
 
     <div id="peipaoResult">
+      <div class="result-card highlight" style="text-align:center;padding:18px;margin-top:18px">
+        <div class="label">加盟主全年實得</div>
+        <div class="value" id="r_final" style="font-size:26px">60,000</div>
+      </div>
+      <div class="result-grid">
+        <div class="result-card"><div class="label">已按月撥付保證毛利</div><div class="value" id="r_guarantee">54,000</div></div>
+        <div class="result-card highlight"><div class="label">年度結算再補撥</div><div class="value" id="r_extra">6,000</div></div>
+      </div>
+      <p class="note-box" id="r_note">分潤高於保證毛利：全年實得＝保證毛利已撥金額＋結算補撥差額，等於完整淨利分潤。</p>
+
       <div class="result-grid">
         <div class="result-card"><div class="label">年營業額</div><div class="value" id="r_annual">240,000</div></div>
         <div class="result-card"><div class="label">加盟主分潤（60%）</div><div class="value" id="r_share">144,000</div></div>
         <div class="result-card"><div class="label">減：總部代墊租金水電</div><div class="value" id="r_overhead">－84,000</div></div>
         <div class="result-card"><div class="label">可分配淨利分潤</div><div class="value" id="r_net">60,000</div></div>
       </div>
-      <div class="result-grid">
-        <div class="result-card"><div class="label">已按月撥付保證毛利</div><div class="value" id="r_guarantee">54,000</div></div>
-        <div class="result-card highlight"><div class="label">年度結算再補撥</div><div class="value" id="r_extra">6,000</div></div>
-      </div>
-      <div class="result-card highlight" style="text-align:center;padding:18px">
-        <div class="label">加盟主全年實得</div>
-        <div class="value" id="r_final" style="font-size:26px">60,000</div>
-      </div>
-      <p class="note-box" id="r_note">分潤高於保證毛利：全年實得＝保證毛利已撥金額＋結算補撥差額，等於完整淨利分潤。</p>
 
       <div class="chart-wrap">
         <canvas id="chart" width="880" height="260"></canvas>
@@ -103,11 +118,14 @@
     </div>
 
     <div id="texuResult" style="display:none">
+      <div class="result-card highlight" style="text-align:center;padding:18px;margin-top:18px">
+        <div class="label">加盟主全年實得淨利</div>
+        <div class="value" id="t_final" style="font-size:26px">60,000</div>
+      </div>
       <div class="result-grid">
         <div class="result-card"><div class="label">年營業額</div><div class="value" id="t_annual">240,000</div></div>
         <div class="result-card"><div class="label">加盟主分潤（60%，每月結算）</div><div class="value" id="t_share">144,000</div></div>
         <div class="result-card"><div class="label">減：加盟主自付租金水電</div><div class="value" id="t_overhead">－84,000</div></div>
-        <div class="result-card highlight"><div class="label">加盟主全年實得淨利</div><div class="value" id="t_final">60,000</div></div>
       </div>
       <p class="note-box">特許加盟方案無保證毛利，租金水電由加盟主自行負擔（租金年繳、水電季繳），每月依 60/40 直接結算分潤，不必等年度結算。</p>
     </div>
@@ -116,14 +134,16 @@
 
   <section class="section">
     <h2>三種情境快速對照（陪跑方案第 1 年，保證毛利 54,000）</h2>
-    <table class="plan-table">
-      <thead><tr><th>情境</th><th>月營業額</th><th>年營業額</th><th>60% 分潤</th><th>全年實得</th></tr></thead>
-      <tbody>
-        <tr><td>A · 不賺錢</td><td>5,000</td><td>60,000</td><td>36,000</td><td class="hl">54,000（保底）</td></tr>
-        <tr><td>B · 打平有結餘</td><td>20,000</td><td>240,000</td><td>144,000</td><td class="hl">60,000</td></tr>
-        <tr><td>C · 獲利非常好</td><td>30,000</td><td>360,000</td><td>216,000</td><td class="hl">132,000</td></tr>
-      </tbody>
-    </table>
+    <div class="table-scroll">
+      <table class="plan-table">
+        <thead><tr><th>情境</th><th>月營業額</th><th>年營業額</th><th>60% 分潤</th><th>全年實得</th></tr></thead>
+        <tbody>
+          <tr><td>A · 不賺錢</td><td>5,000</td><td>60,000</td><td>36,000</td><td class="hl">54,000（保底）</td></tr>
+          <tr><td>B · 打平有結餘</td><td>20,000</td><td>240,000</td><td>144,000</td><td class="hl">60,000</td></tr>
+          <tr><td>C · 獲利非常好</td><td>30,000</td><td>360,000</td><td>216,000</td><td class="hl">132,000</td></tr>
+        </tbody>
+      </table>
+    </div>
   </section>
 
 </main>
@@ -152,6 +172,10 @@ function setPlan(plan) {
 
 function syncRevenue(v) {
   document.getElementById('revenueVal').textContent = fmt(v) + ' 元';
+}
+
+function syncSpend(v) {
+  document.getElementById('avgSpendVal').textContent = fmt(v) + ' 元／次';
 }
 
 function calc() {
@@ -277,6 +301,8 @@ function drawChart(currentMonthly, guarantee, rent, utility) {
     '（曲線是平的）；超過這個門檻後，營業額每多一點，全年實得就跟著往上走，加盟主開始拿到完整的淨利分潤。';
 }
 
+syncRevenue(document.getElementById('revenue').value);
+syncSpend(document.getElementById('avgSpend').value);
 calc();
 </script>
 
