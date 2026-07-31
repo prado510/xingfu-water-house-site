@@ -76,9 +76,9 @@
           <label for="avgSpend">平均客單價</label>
           <span class="val" id="avgSpendVal">20 元／次</span>
         </div>
-        <input type="range" id="avgSpend" min="10" max="60" step="1" value="20"
+        <input type="range" id="avgSpend" min="10" max="60" step="10" value="20"
                oninput="syncSpend(this.value); calc()">
-        <div class="slider-scale"><span>10 元</span><span>業務可自行調整</span><span>60 元</span></div>
+        <div class="slider-scale"><span>10 元</span><span>每格 10 元，業務可自行調整</span><span>60 元</span></div>
       </div>
 
       <div class="demand-grid">
