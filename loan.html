@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>幸福水屋｜業務培訓站 — 貸款金流試算</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .loan-fields { display: none; }
+  .loan-fields.show { display: block; }
+
+  .cash-note {
+    background: var(--brand-bg-soft);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 12.5px;
+    color: var(--text-sub);
+    margin-bottom: 6px;
+  }
+
+  .invest-list { list-style: none; margin: 0; padding: 0; font-size: 13px; }
+  .invest-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 7px 0;
+    border-bottom: 1px dashed var(--brand-line);
+  }
+  .invest-list li:last-child { border-bottom: none; }
+  .invest-list li .n { color: var(--text-sub); }
+  .invest-list li .v { font-weight: 700; color: var(--brand-maroon); white-space: nowrap; }
+  .invest-list li.total { border-top: 2px solid var(--brand-line); margin-top: 4px; padding-top: 10px; }
+  .invest-list li.total .n { color: var(--brand-maroon); font-weight: 700; }
+  .invest-list li.total .v { color: var(--brand-pink-dark); font-size: 16px; }
+  .invest-list li .tagback {
+    font-size: 11px;
+    color: var(--success);
+    background: var(--success-bg);
+    border-radius: 999px;
+    padding: 1px 8px;
+    margin-left: 6px;
+  }
+
+  .flow-table td.pos { color: var(--success); font-weight: 700; }
+  .flow-table td.neg { color: var(--danger); font-weight: 700; }
+
+  .bar-row { display: flex; align-items: center; gap: 10px; font-size: 12px; margin-bottom: 8px; }
+  .bar-row .y { flex: 0 0 52px; color: var(--text-sub); }
+  .bar-track {
+    flex: 1 1 auto;
+    position: relative;
+    height: 20px;
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid var(--brand-line);
+    overflow: hidden;
+  }
+  .bar-zero { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--brand-line); }
+  .bar-fill { position: absolute; top: 2px; bottom: 2px; border-radius: 4px; }
+  .bar-fill.up { background: var(--success); }
+  .bar-fill.down { background: var(--danger); }
+  .bar-row .amt { flex: 0 0 96px; text-align: right; font-weight: 700; white-space: nowrap; }
+  .bar-row .amt.up { color: var(--success); }
+  .bar-row .amt.down { color: var(--danger); }
+
+  .verdict {
+    border-radius: 12px;
+    padding: 16px 18px;
+    font-size: 13.5px;
+    line-height: 1.7;
+    margin-top: 6px;
+  }
+  .verdict.ok { background: var(--success-bg); color: var(--text-main); }
+  .verdict.warn { background: var(--danger-bg); color: var(--text-main); }
+  .verdict strong { color: inherit; }
+
+  .checkline { font-size: 12.5px; color: var(--text-sub); display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="brand">
+    <img src="assets/logo.svg" alt="幸福水屋 logo">
+    <div>幸福水屋
+      <span class="tag">業務培訓站 · 24H 共享淨水站</span>
+    </div>
+  </div>
+  <button class="nav-toggle" onclick="toggleNav()" aria-label="選單"><span></span><span></span><span></span></button>
+  <div class="navlinks">
+    <a href="index.html">品牌故事</a>
+    <a href="compare.html">方案比較</a>
+    <a href="calculator.html">營業額試算</a>
+    <a href="qa.html">問答專區</a>
+    <a href="perspectives.html">多元觀點</a>
+    <a href="loan.html" class="active">貸款試算</a>
+  </div>
+</nav>
+
+<main>
+
+  <div class="section">
+    <p class="eyebrow">錢從哪裡來、四年怎麼還</p>
+    <h1>貸款金流試算器</h1>
+    <p class="sub">
+      加盟主最常問的其實不是「會不會賺」，而是「我要先掏多少錢、每個月還得出來嗎」。
+      這個試算器把前期投入、貸款月付、營運分潤放在同一條時間軸上，直接看四年的現金進出。
+      試算僅供業務對談參考，實際貸款條件請以銀行核貸結果、方案細節請以正式合約為準。
+    </p>
+
+    <h2>1 · 選方案</h2>
+    <div class="calc-toggle" id="planToggle">
+      <button data-plan="companion" class="active">陪跑方案（4 年）</button>
+      <button data-plan="franchise">特許加盟方案（3 年）</button>
+    </div>
+
+    <h2>2 · 前期投入</h2>
+    <ul class="invest-list" id="investList"></ul>
+    <p class="note-box" id="investNote"></p>
+  </div>
+
+  <div class="section">
+    <h2>3 · 這筆錢怎麼來</h2>
+    <div class="calc-toggle" id="fundToggle">
+      <button data-fund="cash" class="active">全額現金</button>
+      <button data-fund="loan">銀行貸款</button>
+    </div>
+
+    <div id="cashNote" class="cash-note">
+      全額現金：期初一次付清前期投入，之後每年沒有還款壓力，四年金流就等於營運實得。
+    </div>
+
+    <div class="loan-fields" id="loanFields">
+      <div class="calc-row">
+        <label>貸款金額</label>
+        <input type="number" id="loanAmount" step="10000" min="0">
+        <span class="val" id="loanAmountHint"></span>
+      </div>
+      <div class="calc-row-2col" style="margin-bottom:12px;">
+        <div class="calc-field">
+          <label>年利率（%）</label>
+          <input type="number" id="rate" value="4" step="0.1" min="0" max="30">
+        </div>
+        <div class="calc-field">
+          <label>貸款年限（年）</label>
+          <input type="number" id="term" value="4" step="1" min="1" max="10">
+        </div>
+      </div>
+      <div class="calc-row">
+        <label>還款方式</label>
+        <select id="repayType">
+          <option value="amort">本利攤還（每月本金＋利息）</option>
+          <option value="grace">前幾年只繳息不還本金</option>
+        </select>
+      </div>
+      <div class="calc-row" id="graceRow" style="display:none;">
+        <label>寬限期（年）</label>
+        <input type="number" id="grace" value="2" step="1" min="1" max="10">
+        <span class="val" id="graceHint"></span>
+      </div>
+      <p class="note-box" id="loanNote"></p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>4 · 營運假設</h2>
+
+    <div class="calc-slider">
+      <div class="slider-head">
+        <label for="revenue">月營業額</label>
+        <span class="val" id="revenueVal">20,000 元</span>
+      </div>
+      <input type="range" id="revenue" min="5000" max="80000" step="1000" value="20000">
+      <div class="slider-scale"><span>5,000</span><span>80,000</span></div>
+    </div>
+
+    <div class="calc-slider">
+      <div class="slider-head">
+        <label for="price">平均客單價</label>
+        <span class="val" id="priceVal">20 元／次</span>
+      </div>
+      <input type="range" id="price" min="10" max="60" step="10" value="20">
+      <div class="slider-scale"><span>10 元</span><span>每格 10 元</span><span>60 元</span></div>
+    </div>
+
+    <div class="calc-row-2col" style="margin-bottom:16px;">
+      <div class="calc-field">
+        <label>月租金</label>
+        <input type="number" id="rent" value="5000" step="500" min="0">
+      </div>
+      <div class="calc-field">
+        <label>月水電</label>
+        <input type="number" id="util" value="2000" step="500" min="0">
+      </div>
+    </div>
+
+    <div class="demand-box">
+      <div class="demand-intro">這個營業額，大概需要多少人來消費？（假設每人每週固定加水一次、一次約 20 公升）</div>
+      <div class="demand-grid">
+        <div><div class="num" id="perDay">-</div><div class="cap">平均每天約需要（人次）</div></div>
+        <div><div class="num" id="perWeek">-</div><div class="cap">每週約需要（不重複人數）</div></div>
+        <div><div class="num" id="perMonth">-</div><div class="cap">相當於每月累計（人次）</div></div>
+      </div>
+    </div>
+
+    <div class="checkline">
+      <input type="checkbox" id="includeDeposit" checked>
+      <label for="includeDeposit">把「合約期滿退還的保證金／押金」算進最後一年的金流</label>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>5 · 四年金流表</h2>
+
+    <div class="result-grid">
+      <div class="result-card">
+        <div class="label">期初要自己拿出來的錢</div>
+        <div class="value" id="upfront">-</div>
+      </div>
+      <div class="result-card">
+        <div class="label">四年總還款（本金＋利息）</div>
+        <div class="value" id="totalPay">-</div>
+      </div>
+      <div class="result-card">
+        <div class="label">四年總利息支出</div>
+        <div class="value" id="totalInterest">-</div>
+      </div>
+      <div class="result-card highlight">
+        <div class="label">四年累計淨現金流（含期初自備款）</div>
+        <div class="value" id="cumFinal">-</div>
+      </div>
+    </div>
+
+    <div class="table-scroll">
+      <table class="plan-table flow-table">
+        <thead>
+          <tr>
+            <th>年度</th>
+            <th>加盟主營運實得</th>
+            <th>貸款還款</th>
+            <th>其中利息</th>
+            <th>年度淨現金流</th>
+            <th>累計現金流</th>
+          </tr>
+        </thead>
+        <tbody id="flowBody"></tbody>
+      </table>
+    </div>
+
+    <div class="chart-wrap">
+      <div style="font-size:12.5px;color:var(--text-sub);margin-bottom:10px;">累計現金流走勢（從期初自備款開始往回收）</div>
+      <div id="bars"></div>
+    </div>
+
+    <div class="verdict" id="verdict"></div>
+
+    <p class="note-box" id="footNote"></p>
+  </div>
+
+  <div class="section">
+    <h2>業務怎麼用這一頁</h2>
+    <ul style="font-size:13px;color:var(--text-sub);padding-left:18px;margin:0;">
+      <li style="margin-bottom:8px;">先問加盟主「手邊能動用多少現金」，再決定按「全額現金」還是「銀行貸款」。</li>
+      <li style="margin-bottom:8px;">利率不要自己亂喊。先問他往來銀行給的條件，直接填進去；不知道就用 4% 當作談話起點，並說明實際以核貸為準。</li>
+      <li style="margin-bottom:8px;">如果他擔心「前兩年還不出來」，就把還款方式切成「只繳息不還本金」，讓他看到寬限期內月付大幅下降——但同時要老實講：寬限期結束後月付會跳高，而且總利息變多。</li>
+      <li style="margin-bottom:8px;">拖營業額滑桿時，順便看下方的客源需求：把「要幾個固定客戶」講清楚，比單講數字有說服力。</li>
+      <li>最後一年的保證金／押金退還是這個生意的重點之一，記得把勾選框打開跟他一起看一次。</li>
+    </ul>
+    <div class="cta-row" style="margin-top:18px;">
+      <a class="btn" href="calculator.html">回營業額試算 →</a>
+    </div>
+  </div>
+
+</main>
+
+<footer class="pagefoot">幸福水屋 業務培訓站 · 內部使用，方案細節以正式合約為準</footer>
+
+<script src="assets/nav.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var PLANS = {
+    companion: {
+      name: '陪跑方案',
+      years: 4,
+      items: [
+        { n: '設備租賃保證金', v: 450000, back: true, backNote: '滿 4 年全額退還' },
+        { n: '教育訓練費', v: 40000 },
+        { n: '水電到位費', v: 38000 },
+        { n: '品牌授權費（600 元／月 × 48 個月）', v: 28800 }
+      ],
+      note: '陪跑方案的設備費已含在 450,000 元設備租賃保證金機制內，合約滿 4 年全額退還；提前退約會依級距扣懲罰性違約金，細節見方案比較頁。租金水電由總部代墊，但會計入門市損益、從分潤扣除，所以下面的試算一樣要填租金水電。',
+      guarantee: [54000, 45000, 36000, 36000],
+      selfPayCost: false
+    },
+    franchise: {
+      name: '特許加盟方案',
+      years: 3,
+      items: [
+        { n: '設備費（總額 880,000 的 60%）', v: 528000 },
+        { n: '保證金', v: 40000, back: true, backNote: '到期退還' },
+        { n: '租金場地保證金', v: 15000, back: true, backNote: '到期退還' },
+        { n: '水電押金', v: 15000, back: true, backNote: '到期退還' },
+        { n: '水電到位費', v: 38000 },
+        { n: '品牌授權費（600 元／月 × 36 個月）', v: 21600 },
+        { n: '加盟金（目前免付）', v: 0 }
+      ],
+      note: '特許加盟方案沒有保證毛利，租金水電由加盟主自行負擔（租金年繳、水電季繳），每月依 60/40 直接結算分潤。合約為 3 年一約，下表第 4 年是「續約後」的假設年度（設備費不會重複投入）；設備費在 3 年到期不續約時不予退還，這點務必先跟加盟主講清楚。',
+      guarantee: null,
+      selfPayCost: true
+    }
+  };
+
+  var state = { plan: 'companion', fund: 'cash', loanTouched: false };
+
+  var $ = function (id) { return document.getElementById(id); };
+  var fmt = function (n) {
+    var r = Math.round(n);
+    var s = Math.abs(r).toLocaleString('en-US');
+    return (r < 0 ? '－' : '') + s;
+  };
+  var money = function (n) { return fmt(n) + ' 元'; };
+
+  function planData() { return PLANS[state.plan]; }
+
+  function upfrontTotal() {
+    return planData().items.reduce(function (s, i) { return s + i.v; }, 0);
+  }
+
+  function refundTotal() {
+    return planData().items.reduce(function (s, i) { return s + (i.back ? i.v : 0); }, 0);
+  }
+
+  function renderInvest() {
+    var p = planData();
+    var html = '';
+    p.items.forEach(function (i) {
+      html += '<li><span class="n">' + i.n +
+        (i.back ? '<span class="tagback">' + i.backNote + '</span>' : '') +
+        '</span><span class="v">' + fmt(i.v) + '</span></li>';
+    });
+    html += '<li class="total"><span class="n">前期投入合計</span><span class="v">' + fmt(upfrontTotal()) + '</span></li>';
+    $('investList').innerHTML = html;
+    $('investNote').textContent = p.note;
+  }
+
+  /* 依貸款條件跑月度攤還表，回傳每年的本金／利息／餘額 */
+  function buildSchedule(principal, annualRate, years, graceYears) {
+    var out = { yearly: [], endBalance: principal, totalInterest: 0, totalPay: 0, monthlyGrace: 0, monthlyAfter: 0 };
+    if (principal <= 0 || years <= 0) return out;
+
+    var r = annualRate / 100 / 12;
+    var n = years * 12;
+    var g = Math.max(0, Math.min(graceYears, years)) * 12;
+    var amortMonths = n - g;
+    var bal = principal;
+
+    var pmt;
+    if (amortMonths <= 0) {
+      pmt = 0; // 全期只繳息，到期一次還本
+    } else if (r === 0) {
+      pmt = principal / amortMonths;
+    } else {
+      pmt = principal * r / (1 - Math.pow(1 + r, -amortMonths));
+    }
+    out.monthlyGrace = principal * r;
+    out.monthlyAfter = pmt;
+
+    var yearAgg = {};
+    for (var m = 1; m <= n; m++) {
+      var y = Math.ceil(m / 12);
+      if (!yearAgg[y]) yearAgg[y] = { interest: 0, principal: 0, pay: 0 };
+      var interest = bal * r;
+      var princ;
+      if (m <= g) {
+        princ = 0;
+      } else {
+        princ = Math.min(pmt - interest, bal);
+      }
+      if (m === n) { princ = bal; } // 期末結清剩餘本金（含全期只繳息的一次還本）
+      bal = bal - princ;
+      yearAgg[y].interest += interest;
+      yearAgg[y].principal += princ;
+      yearAgg[y].pay += interest + princ;
+      out.totalInterest += interest;
+      out.totalPay += interest + princ;
+    }
+    for (var yy = 1; yy <= years; yy++) {
+      out.yearly.push(yearAgg[yy] || { interest: 0, principal: 0, pay: 0 });
+    }
+    out.endBalance = bal;
+    return out;
+  }
+
+  function operatingIncome(yearIndex, monthlyRev, monthlyCost) {
+    // yearIndex: 1..4
+    var p = planData();
+    var annualRev = monthlyRev * 12;
+    var share = annualRev * 0.6;
+    var cost = monthlyCost * 12;
+    if (p.guarantee) {
+      var g = p.guarantee[Math.min(yearIndex, p.guarantee.length) - 1];
+      return Math.max(g, share - cost);
+    }
+    return share - cost;
+  }
+
+  function calc() {
+    var p = planData();
+    var monthlyRev = +$('revenue').value;
+    var price = +$('price').value;
+    var rent = +$('rent').value || 0;
+    var util = +$('util').value || 0;
+    var monthlyCost = rent + util;
+
+    $('revenueVal').textContent = fmt(monthlyRev) + ' 元';
+    $('priceVal').textContent = price + ' 元／次';
+
+    var visits = monthlyRev / price;
+    $('perDay').textContent = fmt(visits / 30);
+    $('perWeek').textContent = fmt(visits / 4.33);
+    $('perMonth').textContent = fmt(visits);
+
+    var total = upfrontTotal();
+    if (!state.loanTouched) { $('loanAmount').value = total; }
+    var loanAmt = state.fund === 'loan' ? Math.max(0, Math.min(+$('loanAmount').value || 0, 99999999)) : 0;
+    $('loanAmountHint').textContent = state.fund === 'loan'
+      ? '前期投入 ' + fmt(total)
+      : '';
+
+    var rate = +$('rate').value || 0;
+    var term = Math.max(1, +$('term').value || 1);
+    var repay = $('repayType').value;
+    var grace = repay === 'grace' ? Math.max(1, Math.min(+$('grace').value || 1, term)) : 0;
+    $('graceRow').style.display = repay === 'grace' ? 'flex' : 'none';
+
+    var sch = buildSchedule(loanAmt, rate, term, grace);
+
+    if (state.fund === 'loan') {
+      var noteParts = [];
+      if (repay === 'grace') {
+        if (grace >= term) {
+          noteParts.push('全期只繳息：每月約 ' + money(sch.monthlyGrace) + '，第 ' + term + ' 年期末一次償還本金 ' + money(loanAmt) + '。');
+        } else {
+          noteParts.push('前 ' + grace + ' 年只繳息，每月約 ' + money(sch.monthlyGrace) +
+            '；第 ' + (grace + 1) + ' 年起本利攤還，每月約 ' + money(sch.monthlyAfter) + '。');
+        }
+        noteParts.push('寬限期的代價是總利息變多——月付變輕不等於變便宜，這點要主動跟加盟主說。');
+      } else {
+        noteParts.push('本利攤還：每月固定約 ' + money(sch.monthlyAfter) + '，' + term + ' 年（' + (term * 12) + ' 期）繳完。');
+      }
+      $('loanNote').textContent = noteParts.join(' ');
+    }
+
+    var upfront = total - loanAmt;
+    var refund = $('includeDeposit').checked ? refundTotal() : 0;
+    var refundYear = p.years; // 合約期滿的那一年
+
+    var rows = '';
+    var barsHtml = '';
+    var cum = -upfront;
+    var series = [{ label: '期初', cum: cum }];
+    var sumPay = 0, sumInt = 0, sumPrinc = 0;
+
+    for (var y = 1; y <= 4; y++) {
+      var op = operatingIncome(y, monthlyRev, monthlyCost);
+      var pay = sch.yearly[y - 1] ? sch.yearly[y - 1].pay : 0;
+      var intr = sch.yearly[y - 1] ? sch.yearly[y - 1].interest : 0;
+      sumPay += pay; sumInt += intr;
+      sumPrinc += sch.yearly[y - 1] ? sch.yearly[y - 1].principal : 0;
+      var extra = (y === refundYear) ? refund : 0;
+      var net = op - pay + extra;
+      cum += net;
+      series.push({ label: '第 ' + y + ' 年', cum: cum });
+
+      rows += '<tr>' +
+        '<td>第 ' + y + ' 年' + (y === refundYear && refund > 0 ? '<br><span style="font-size:11px;color:var(--success)">＋退還保證金 ' + fmt(refund) + '</span>' : '') + '</td>' +
+        '<td>' + fmt(op) + '</td>' +
+        '<td>' + (pay > 0 ? '－' + fmt(pay) : '－') + '</td>' +
+        '<td>' + (intr > 0 ? fmt(intr) : '－') + '</td>' +
+        '<td class="' + (net >= 0 ? 'pos' : 'neg') + '">' + fmt(net) + '</td>' +
+        '<td class="' + (cum >= 0 ? 'pos' : 'neg') + '">' + fmt(cum) + '</td>' +
+        '</tr>';
+    }
+    $('flowBody').innerHTML = rows;
+
+    // 累計現金流長條圖
+    var maxAbs = Math.max.apply(null, series.map(function (s) { return Math.abs(s.cum); }).concat([1]));
+    series.forEach(function (s) {
+      var pct = Math.abs(s.cum) / maxAbs * 50;
+      var up = s.cum >= 0;
+      barsHtml += '<div class="bar-row">' +
+        '<span class="y">' + s.label + '</span>' +
+        '<span class="bar-track"><span class="bar-zero" style="left:50%"></span>' +
+        '<span class="bar-fill ' + (up ? 'up' : 'down') + '" style="' +
+        (up ? 'left:50%;width:' + pct + '%' : 'right:50%;width:' + pct + '%') + '"></span></span>' +
+        '<span class="amt ' + (up ? 'up' : 'down') + '">' + fmt(s.cum) + '</span>' +
+        '</div>';
+    });
+    $('bars').innerHTML = barsHtml;
+
+    $('upfront').textContent = money(upfront);
+    $('totalPay').textContent = state.fund === 'loan' ? money(sumPay) : '無貸款';
+    $('totalInterest').textContent = state.fund === 'loan' ? money(sumInt) : '無貸款';
+    $('cumFinal').textContent = money(cum);
+
+    // 結論：只有「期末為正、且之後都沒再翻負」才算回本
+    var v = '';
+    var cls = 'ok';
+    if (cum >= 0) {
+      var turnIdx = series.length - 1;
+      while (turnIdx > 0 && series[turnIdx - 1].cum >= 0) { turnIdx--; }
+      var everNegative = series.some(function (s) { return s.cum < 0; });
+      if (!everNegative) {
+        v = '在目前假設下，累計現金流<strong>全程都沒有轉負</strong>（前期投入幾乎都靠貸款支應），四年結束時累計 <strong>' + money(cum) + '</strong>。';
+      } else {
+        v = '在目前假設下，累計現金流在 <strong>' + series[turnIdx].label + '</strong> 由負轉正並維持到期末，四年結束時手上多出 <strong>' + money(cum) + '</strong>。';
+      }
+      var worst = series.reduce(function (a, b) { return b.cum < a.cum ? b : a; });
+      if (worst.cum < 0) {
+        v += ' 過程中最低點落在 <strong>' + worst.label + '</strong>，累計 ' + money(worst.cum) + '——這就是加盟主真正要準備好的資金缺口。';
+      }
+    } else {
+      cls = 'warn';
+      v = '在目前假設下，四年內累計現金流<strong>沒有回正</strong>，期末仍是 <strong>' + money(cum) + '</strong>。' +
+          '這時候不要硬推——把營業額滑桿往上拉，讓加盟主自己看到需要做到多少業績才划算，才是真正幫他做決定。';
+    }
+    var balAtY4 = Math.max(0, loanAmt - sumPrinc);
+    if (state.fund === 'loan' && balAtY4 > 1) {
+      v += ' 另外提醒：貸款年限 ' + term + ' 年，第 4 年結束時仍有本金餘額 <strong>' + money(balAtY4) + '</strong> 尚未還完。';
+    }
+    if (state.fund === 'loan' && loanAmt > 0) {
+      var y1op = operatingIncome(1, monthlyRev, monthlyCost);
+      var y1pay = sch.yearly[0] ? sch.yearly[0].pay : 0;
+      if (y1pay > y1op) {
+        v += ' 第 1 年的還款金額高於營運實得，缺口約 ' + money(y1pay - y1op) + '，等於要另外準備這筆生活與周轉現金。';
+      }
+    }
+    var vd = $('verdict');
+    vd.className = 'verdict ' + cls;
+    vd.innerHTML = v;
+
+    var fn = '「加盟主營運實得」＝年營業額 × 60% 分潤 － 租金水電。';
+    if (p.guarantee) {
+      fn += '陪跑方案有保證毛利保底（12%→10%→8%→8%，即 54,000／45,000／36,000／36,000），分潤低於保底時以保底計。';
+    } else {
+      fn += '特許加盟方案沒有保證毛利，分潤不足以支應租金水電時就是負數。第 4 年為續約後的假設年度；保證金與押金的退還列在第 3 年（合約期滿），若選擇續約，這筆押金會續押、不會在第 3 年拿回。設備費 528,000 不論如何都不退還。';
+    }
+    fn += '此表為現金流量觀點，未計入營利事業所得稅、加盟主自己的時間成本，以及每週維護機台的人力。';
+    $('footNote').textContent = fn;
+  }
+
+  // 事件
+  Array.prototype.forEach.call(document.querySelectorAll('#planToggle button'), function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('#planToggle button').forEach(function (x) { x.classList.remove('active'); });
+      b.classList.add('active');
+      state.plan = b.getAttribute('data-plan');
+      state.loanTouched = false;
+      renderInvest();
+      calc();
+    });
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll('#fundToggle button'), function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('#fundToggle button').forEach(function (x) { x.classList.remove('active'); });
+      b.classList.add('active');
+      state.fund = b.getAttribute('data-fund');
+      var isLoan = state.fund === 'loan';
+      $('loanFields').classList.toggle('show', isLoan);
+      $('cashNote').style.display = isLoan ? 'none' : 'block';
+      calc();
+    });
+  });
+
+  $('loanAmount').addEventListener('input', function () { state.loanTouched = true; calc(); });
+
+  ['revenue', 'price', 'rent', 'util', 'rate', 'term', 'repayType', 'grace', 'includeDeposit'].forEach(function (id) {
+    $(id).addEventListener('input', calc);
+    $(id).addEventListener('change', calc);
+  });
+
+  renderInvest();
+  calc();
+})();
+</script>
+</body>
+</html>
