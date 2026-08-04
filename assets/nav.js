@@ -16,7 +16,8 @@ document.addEventListener('click', function (e) {
    如果之後還要再加頁面，只要在 EXTRA_LINKS 加一筆即可。 */
 (function () {
   var EXTRA_LINKS = [
-    { href: 'loan.html', text: '貸款試算' }
+    { href: 'loan.html', text: '貸款試算' },
+    { href: 'market.html', text: '商圈分析' }
   ];
 
   function currentFile() {
