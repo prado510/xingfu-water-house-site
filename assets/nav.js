@@ -1,61 +1,34 @@
-function toggleNav() {
-  var el = document.querySelector('.navlinks');
-  if (el) el.classList.toggle('open');
-}
+// 幸福水屋業務培訓站 ─ 導覽列管理
+// 修改這裡的 EXTRA_LINKS 即可新增／移除導覽項目，不需要逐頁修改 HTML。
+// 每個頁面的 HTML 只需寫固定導覽列；active 狀態由 JS 根據目前網址自動套用。
 
-document.addEventListener('click', function (e) {
-  var nav = document.querySelector('.navlinks');
-  var toggle = document.querySelector('.nav-toggle');
-  if (!nav || !toggle) return;
-  if (nav.classList.contains('open') && !nav.contains(e.target) && !toggle.contains(e.target)) {
-    nav.classList.remove('open');
-  }
-});
+const EXTRA_LINKS = [
+  { href: 'perspectives.html', text: '多元觀點' },
+  { href: 'loan.html',         text: '貸款試算' },
+  { href: 'market.html',       text: '商圈分析' },
+  { href: 'survey.html',       text: '點位場勘' },
+  { href: 'qa.html',           text: '問答專區' },
+];
 
-/* 自動補上新頁面的導覽連結（不必逐頁改 HTML）
-   如果之後還要再加頁面，只要在 EXTRA_LINKS 加一筆即可。 */
 (function () {
-  var EXTRA_LINKS = [
-    { href: 'loan.html', text: '貸款試算' },
-    { href: 'market.html', text: '商圈分析' }
-  ];
+  const nav = document.querySelector('nav.topnav');
+  if (!nav) return;
 
-  function currentFile() {
-    var p = window.location.pathname;
-    var f = p.substring(p.lastIndexOf('/') + 1);
-    return f === '' ? 'index.html' : f;
-  }
-
-  function apply() {
-    var nav = document.querySelector('.navlinks');
-    if (!nav) return;
-
-    EXTRA_LINKS.forEach(function (item) {
-      var exists = Array.prototype.some.call(nav.querySelectorAll('a'), function (a) {
-        return (a.getAttribute('href') || '').indexOf(item.href) !== -1;
-      });
-      if (exists) return;
-      var a = document.createElement('a');
-      a.href = item.href;
-      a.textContent = item.text;
+  // 把 EXTRA_LINKS 裡面還沒有出現在 nav 的項目補進去
+  EXTRA_LINKS.forEach(({ href, text }) => {
+    const exists = nav.querySelector(`a[href="${href}"]`);
+    if (!exists) {
+      const a = document.createElement('a');
+      a.href = href;
+      a.textContent = text;
       nav.appendChild(a);
-    });
+    }
+  });
 
-    // 依目前網址標示 active，避免頁面上寫死的 class 標錯
-    var file = currentFile();
-    Array.prototype.forEach.call(nav.querySelectorAll('a'), function (a) {
-      var href = (a.getAttribute('href') || '').split('/').pop();
-      if (href === file) {
-        a.classList.add('active');
-      } else {
-        a.classList.remove('active');
-      }
-    });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', apply);
-  } else {
-    apply();
-  }
+  // 根據目前頁面自動標記 active
+  const current = location.pathname.split('/').pop() || 'index.html';
+  nav.querySelectorAll('a').forEach(a => {
+    const target = a.getAttribute('href').split('/').pop();
+    a.classList.toggle('active', target === current);
+  });
 })();
