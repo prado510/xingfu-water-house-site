@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>點位場勘拍攝指引｜幸福水屋業務培訓站</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    .survey-hero {
+      background: var(--color-bg-soft, #fdf6f8);
+      border-radius: 12px;
+      padding: 2rem 2rem 1.75rem;
+      margin-bottom: 2rem;
+      border: 1px solid var(--color-border, #f0dce4);
+    }
+    .survey-hero .eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: #d4537e;
+      margin: 0 0 0.5rem;
+    }
+    .survey-hero h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin: 0 0 0.6rem;
+      line-height: 1.3;
+    }
+    .survey-hero p {
+      font-size: 1rem;
+      color: #555;
+      margin: 0 0 1.25rem;
+      line-height: 1.7;
+    }
+    .hero-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #d4537e;
+      background: #fbeaf0;
+      border: 1px solid #f4c0d1;
+      border-radius: 20px;
+      padding: 4px 12px;
+    }
+    .pill svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 1.25rem;
+    }
+    .section-header h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin: 0;
+    }
+    .count-badge {
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+      background: #d4537e;
+      border-radius: 20px;
+      padding: 2px 10px;
+    }
+
+    .shot-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+      margin-bottom: 2.5rem;
+    }
+    .shot-card {
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 12px;
+      padding: 1.1rem 1.25rem;
+      position: relative;
+    }
+    .shot-card:hover { border-color: #f4c0d1; }
+    .shot-num {
+      position: absolute;
+      top: -11px;
+      left: 18px;
+      width: 22px;
+      height: 22px;
+      background: #d4537e;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .shot-card h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin: 0.4rem 0 0.4rem;
+    }
+    .shot-desc {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.65;
+      margin: 0 0 0.75rem;
+    }
+    .shot-tip {
+      display: flex;
+      gap: 7px;
+      align-items: flex-start;
+      background: #fdf6f8;
+      border-left: 3px solid #ed93b1;
+      border-radius: 0 6px 6px 0;
+      padding: 7px 10px;
+    }
+    .shot-tip svg { width: 14px; height: 14px; color: #d4537e; flex-shrink: 0; margin-top: 1px; }
+    .shot-tip p { font-size: 12px; color: #7a3d55; margin: 0; line-height: 1.6; }
+
+    .notice-card {
+      background: #fffbf0;
+      border: 1px solid #fac775;
+      border-radius: 12px;
+      padding: 1.1rem 1.25rem;
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .notice-card svg { width: 20px; height: 20px; color: #ba7517; flex-shrink: 0; margin-top: 1px; }
+    .notice-card h3 { font-size: 14px; font-weight: 700; color: #633806; margin: 0 0 0.4rem; }
+    .notice-card p, .notice-card li { font-size: 13px; color: #854f0b; margin: 0; line-height: 1.7; }
+    .notice-card ul { margin: 0.4rem 0 0; padding-left: 1.2rem; }
+
+    .checklist-section {
+      background: #f0faf5;
+      border: 1px solid #9fe1cb;
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .checklist-section h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #085041;
+      margin: 0 0 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .checklist-section h2 svg { width: 18px; height: 18px; color: #0f6e56; }
+    .checklist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 8px;
+    }
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 13px;
+      color: #085041;
+      line-height: 1.5;
+    }
+    .check-item svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; color: #0f6e56; }
+
+    .naming-card {
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 12px;
+      padding: 1.1rem 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+    .naming-card h2 { font-size: 1rem; font-weight: 700; color: #1a1a1a; margin: 0 0 0.75rem; }
+    .naming-example {
+      background: #f7f7f7;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-family: monospace;
+      font-size: 13px;
+      color: #333;
+      margin-bottom: 0.5rem;
+      line-height: 1.9;
+    }
+    .naming-card p { font-size: 13px; color: #777; margin: 0; }
+
+    /* ── 示範照片集區塊 ── */
+    .example-section {
+      border-top: 1px solid #eee;
+      padding-top: 2rem;
+      margin-top: 0.5rem;
+    }
+    .example-section-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 1.5rem;
+    }
+    .example-section-header div h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin: 0 0 0.25rem;
+    }
+    .example-section-header div p {
+      font-size: 13px;
+      color: #888;
+      margin: 0;
+    }
+    .location-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #d4537e;
+      background: #fbeaf0;
+      border: 1px solid #f4c0d1;
+      border-radius: 20px;
+      padding: 3px 10px;
+      white-space: nowrap;
+      margin-top: 4px;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .photo-card {
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .photo-card:hover { border-color: #f4c0d1; }
+    .photo-card img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      display: block;
+    }
+    .photo-meta {
+      padding: 0.75rem 1rem;
+    }
+    .photo-meta-top {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 0.3rem;
+    }
+    .photo-num-badge {
+      width: 20px;
+      height: 20px;
+      background: #d4537e;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .photo-meta h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin: 0;
+    }
+    .photo-meta p {
+      font-size: 12px;
+      color: #888;
+      margin: 0;
+      line-height: 1.5;
+    }
+    .photo-missing {
+      aspect-ratio: 4/3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #f7f7f7;
+      color: #bbb;
+      gap: 6px;
+      font-size: 12px;
+    }
+    .photo-missing svg { width: 28px; height: 28px; }
+  </style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="index.html">品牌故事</a>
+  <a href="compare.html">方案比較</a>
+  <a href="calculator.html">營業額試算</a>
+  <a href="perspectives.html">多元觀點</a>
+  <a href="loan.html">貸款試算</a>
+  <a href="market.html">商圈分析</a>
+  <a href="qa.html">問答專區</a>
+  <a href="survey.html" class="active">點位場勘</a>
+</nav>
+
+<main>
+  <div class="section">
+
+    <!-- Hero -->
+    <div class="survey-hero">
+      <p class="eyebrow">展店作業 / 點位評估</p>
+      <h1>點位場勘：標準拍攝指引</h1>
+      <p>每次場勘請拍攝以下 8 個標準角度，讓總部在台中就能遠端判斷點位是否適合擺設機台，大幅縮短評估來回時間。</p>
+      <div class="hero-pills">
+        <span class="pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          共 8 個角度
+        </span>
+        <span class="pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          場勘當天完成拍攝
+        </span>
+        <span class="pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          拍完統一上傳回報
+        </span>
+      </div>
+    </div>
+
+    <!-- 8 個拍攝角度 -->
+    <div class="section-header">
+      <h2>必拍角度</h2>
+      <span class="count-badge">共 8 張</span>
+    </div>
+
+    <div class="shot-grid">
+      <div class="shot-card">
+        <div class="shot-num">1</div>
+        <h3>店面正面全景</h3>
+        <p class="shot-desc">完整呈現店招、入口、騎樓與兩側街道，掌握整體環境與可視性。</p>
+        <div class="shot-tip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <p>站馬路對面或斜對面拍，確保整棟立面完整入鏡，不被路樹或電線桿遮住招牌。</p>
+        </div>
+      </div>
+      <div class="shot-card">
+        <div class="shot-num">2</div>
+        <h3>入口騎樓正面近拍</h3>
+        <p class="shot-desc">清楚呈現門口寬度、騎樓淨深、天花板高度，確認機台搬入動線無障礙。</p>
+        <div class="shot-tip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <p>正面平視拍攝，高度約腰部到胸口，帶出地板到天花板的完整縱深。</p>
+        </div>
+      </div>
+      <div class="shot-card">
+        <div class="shot-num">3</div>
+        <h3>機台預定位置（需標記）</h3>
+        <p class="shot-desc">用紅框或標示物標出機台預計放置的確切位置，同時呈現周邊柱子、電箱等障礙物。</p>
+        <div class="shot-tip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <p>這張最關鍵。建議先用膠帶在地板標出機台尺寸範圍（約 60×60 cm）再拍。</p>
+        </div>
+      </div>
+      <div class="shot-card">
+        <div class="shot-num">4</div>
+        <h3>騎樓縱向動線</h3>
+        <p class="shot-desc">呈現騎樓走廊縱向深度，確認機台安裝後不阻擋人行通道，方便日後維修進出。</p>
+        <div class="shot-tip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <p>站在走廊一端朝另一端拍，讓法規要求的 1.5 米人行淨寬是否足夠一目了然。</p>
+        </div>
+      </div>
+      <div class="shot-card">
+        <div class="shot-num">5</div>
+        <h3>地板平整度</h3>
+        <p class="shot-desc">俯拍地板表面，確認是否平整、有無裂縫、高低差或積水痕跡，影響機台穩定與排水。</p>
+        <div class="shot-tip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <p>拍出至少 1×1 公尺範圍。若有明顯破損或低窪積水，需補拍特寫。</p>
+        </div>
+      </div>
+      <div class="shot-card">
+        <div class="shot-num">6</div>
+        <h3>最近電源位置</h3>
+        <p class="shot-desc">拍出最近的插座或電箱，讓總部評估是否需要申請獨立迴路或拉明管，預估電工費用。</p>
+        <div class="shot-tip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <p>同一張帶出電源與預定機台位置的相對距離，若超過 3 公尺請在現場備注。</p>
+        </div>
+      </div>
+      <div class="shot-card">
+        <div class="shot-num">7</div>
+        <h3>周邊商圈（左右各一張）</h3>
+        <p class="shot-desc">左側、右側各拍一張，呈現半徑 100 公尺內的鄰近業態，如超商、藥妝、洗衣店等。</p>
+        <div class="shot-tip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <p>兩張分開拍並標注方向，招牌清楚入鏡，幫助總部判斷客群重疊度與競爭狀況。</p>
+        </div>
+      </div>
+      <div class="shot-card">
+        <div class="shot-num">8</div>
+        <h3>尖峰時段人流實況</h3>
+        <p class="shot-desc">在預估人流最密集的時段拍攝，呈現現場真實人流狀況作為評估佐證。</p>
+        <div class="shot-tip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <p>照片檔名或備注標注拍攝時間，例如「週六 10:30」，作為人流評估的佐證依據。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 注意事項 -->
+    <div class="notice-card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <div>
+        <h3>場勘前請確認</h3>
+        <ul>
+          <li>已取得場地方同意（超市／店家）才能入內測量與拍攝</li>
+          <li>雨天不宜進行地板與人流拍攝，建議擇晴天或陰天</li>
+          <li>若是封閉式室內場地，請額外拍攝通風與排水孔位置</li>
+          <li>同一點位如有多個可選位置，每個位置都需完整拍攝 8 張</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 上傳前自我檢查 -->
+    <div class="checklist-section">
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        上傳前自我檢查
+      </h2>
+      <div class="checklist-grid">
+        <div class="check-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          8 個角度全部拍齊
+        </div>
+        <div class="check-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          每張照片清晰不模糊
+        </div>
+        <div class="check-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          預定位置有明確標記（第 3 張）
+        </div>
+        <div class="check-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          人流照片有備注拍攝時間（第 8 張）
+        </div>
+        <div class="check-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          電源位置與距離清楚可見（第 6 張）
+        </div>
+        <div class="check-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          商圈左右各一張共兩張（第 7 組）
+        </div>
+        <div class="check-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          地板破損或積水已補拍特寫
+        </div>
+        <div class="check-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          照片已依命名規則重新命名
+        </div>
+      </div>
+    </div>
+
+    <!-- 命名規則 -->
+    <div class="naming-card">
+      <h2>📁 照片命名規則</h2>
+      <div class="naming-example">
+        01_楓康超市_正面全景.jpg<br>
+        02_楓康超市_入口騎樓近拍.jpg<br>
+        03_楓康超市_機台預定位置.jpg<br>
+        04_楓康超市_騎樓縱向動線.jpg<br>
+        05_楓康超市_地板狀況.jpg<br>
+        06_楓康超市_電源位置.jpg<br>
+        07a_楓康超市_商圈左側.jpg<br>
+        07b_楓康超市_商圈右側.jpg<br>
+        08_楓康超市_尖峰人流_週日1030.jpg
+      </div>
+      <p>依「角度編號＋地點名稱＋角度說明」命名，拍完後統一壓縮成一個資料夾，回傳給總部。</p>
+    </div>
+
+    <!-- ══ 示範照片集 ══ -->
+    <div class="example-section">
+      <div class="example-section-header">
+        <div>
+          <h2>示範照片集</h2>
+          <p>以下為實際場勘照片範例，供業務人員對照拍攝標準。</p>
+        </div>
+        <span class="location-tag">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          台灣楓康超市
+        </span>
+      </div>
+
+      <div class="photo-grid">
+
+        <!-- 角度 1 -->
+        <div class="photo-card">
+          <img src="assets/survey/01_正面全景.jpg" alt="店面正面全景" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\'photo-missing\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\'/><circle cx=\'8.5\' cy=\'8.5\' r=\'1.5\'/><polyline points=\'21 15 16 10 5 21\'/></svg><span>圖片載入中</span></div>'">
+          <div class="photo-meta">
+            <div class="photo-meta-top">
+              <div class="photo-num-badge">1</div>
+              <h3>店面正面全景</h3>
+            </div>
+            <p>站馬路對面拍攝，整棟立面完整入鏡，店招清晰可見。</p>
+          </div>
+        </div>
+
+        <!-- 角度 2 -->
+        <div class="photo-card">
+          <img src="assets/survey/02_入口騎樓近拍.jpg" alt="入口騎樓正面近拍" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\'photo-missing\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\'/><circle cx=\'8.5\' cy=\'8.5\' r=\'1.5\'/><polyline points=\'21 15 16 10 5 21\'/></svg><span>圖片載入中</span></div>'">
+          <div class="photo-meta">
+            <div class="photo-meta-top">
+              <div class="photo-num-badge">2</div>
+              <h3>入口騎樓正面近拍</h3>
+            </div>
+            <p>正面平視，清楚呈現騎樓深度與天花板高度。</p>
+          </div>
+        </div>
+
+        <!-- 角度 3 -->
+        <div class="photo-card">
+          <img src="assets/survey/03_機台預定位置.jpg" alt="機台預定位置" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\'photo-missing\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\'/><circle cx=\'8.5\' cy=\'8.5\' r=\'1.5\'/><polyline points=\'21 15 16 10 5 21\'/></svg><span>圖片載入中</span></div>'">
+          <div class="photo-meta">
+            <div class="photo-meta-top">
+              <div class="photo-num-badge">3</div>
+              <h3>機台預定位置（紅框標記）</h3>
+            </div>
+            <p>以紅框清楚標示機台擺放位置，同時帶出周邊障礙物。</p>
+          </div>
+        </div>
+
+        <!-- 角度 4 -->
+        <div class="photo-card">
+          <img src="assets/survey/04_騎樓縱向動線.jpg" alt="騎樓縱向動線" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\'photo-missing\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\'/><circle cx=\'8.5\' cy=\'8.5\' r=\'1.5\'/><polyline points=\'21 15 16 10 5 21\'/></svg><span>圖片載入中</span></div>'">
+          <div class="photo-meta">
+            <div class="photo-meta-top">
+              <div class="photo-num-badge">4</div>
+              <h3>騎樓縱向動線</h3>
+            </div>
+            <p>站走廊一端朝另一端拍，呈現縱向延伸深度與通道寬度。</p>
+          </div>
+        </div>
+
+        <!-- 角度 5 -->
+        <div class="photo-card">
+          <img src="assets/survey/05_地板狀況.jpg" alt="地板平整度" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\'photo-missing\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\'/><circle cx=\'8.5\' cy=\'8.5\' r=\'1.5\'/><polyline points=\'21 15 16 10 5 21\'/></svg><span>圖片載入中</span></div>'">
+          <div class="photo-meta">
+            <div class="photo-meta-top">
+              <div class="photo-num-badge">5</div>
+              <h3>地板平整度</h3>
+            </div>
+            <p>帶出地磚材質與接縫，確認無高低差或積水。</p>
+          </div>
+        </div>
+
+        <!-- 角度 6（本案無此角度，顯示提示） -->
+        <div class="photo-card">
+          <div class="photo-missing">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>本次場勘未拍攝此角度</span>
+          </div>
+          <div class="photo-meta">
+            <div class="photo-meta-top">
+              <div class="photo-num-badge">6</div>
+              <h3>最近電源位置</h3>
+            </div>
+            <p>實際場勘時需補拍，標注插座或電箱與機台位置的距離。</p>
+          </div>
+        </div>
+
+        <!-- 角度 7a -->
+        <div class="photo-card">
+          <img src="assets/survey/07a_商圈左側.jpg" alt="商圈左側" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\'photo-missing\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\'/><circle cx=\'8.5\' cy=\'8.5\' r=\'1.5\'/><polyline points=\'21 15 16 10 5 21\'/></svg><span>圖片載入中</span></div>'">
+          <div class="photo-meta">
+            <div class="photo-meta-top">
+              <div class="photo-num-badge">7a</div>
+              <h3>周邊商圈・左側</h3>
+            </div>
+            <p>敏潔 24H 自助洗衣店，含加水站，為相關業態。</p>
+          </div>
+        </div>
+
+        <!-- 角度 7b -->
+        <div class="photo-card">
+          <img src="assets/survey/07b_商圈右側.jpg" alt="商圈右側" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\'photo-missing\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\'/><circle cx=\'8.5\' cy=\'8.5\' r=\'1.5\'/><polyline points=\'21 15 16 10 5 21\'/></svg><span>圖片載入中</span></div>'">
+          <div class="photo-meta">
+            <div class="photo-meta-top">
+              <div class="photo-num-badge">7b</div>
+              <h3>周邊商圈・右側</h3>
+            </div>
+            <p>康是美藥妝，高頻來客業態，有助帶動加水站人流。</p>
+          </div>
+        </div>
+
+        <!-- 角度 8 -->
+        <div class="photo-card">
+          <img src="assets/survey/08_尖峰人流.jpg" alt="尖峰時段人流" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\'photo-missing\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\'/><circle cx=\'8.5\' cy=\'8.5\' r=\'1.5\'/><polyline points=\'21 15 16 10 5 21\'/></svg><span>圖片載入中</span></div>'">
+          <div class="photo-meta">
+            <div class="photo-meta-top">
+              <div class="photo-num-badge">8</div>
+              <h3>尖峰時段人流實況</h3>
+            </div>
+            <p>白天正面拍攝，可見機車停放與往來人潮，佐證日常流量。</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer class="pagefoot">
+  <p>幸福水屋業務培訓站｜內部使用文件，請勿對外流傳</p>
+</footer>
+
+<script src="assets/nav.js"></script>
+</body>
+</html>
