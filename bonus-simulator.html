@@ -1,587 +1,378 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>幸福水屋｜業績獎勵方案試算工具</title>
+<title>獎勵試算 — 幸福水屋業務培訓站</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
-  :root {
-    --pink: #E8457A; --pink-pale: #FDE8EF;
-    --navy: #1E2D4E; --blue: #3D6CB5;
-    --teal: #2AABBB; --gold: #F2A93B;
-    --green: #3DBB7A; --red: #E84545;
-    --bg: #F8F4F6; --surface: #FFFFFF;
-    --border: #E8DDE3; --text: #1A1A2E;
-    --mid: #4A4A6A; --soft: #8A8AAA;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Noto Sans TC','Inter',sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-
-  /* HEADER */
-  .header { background: var(--navy); padding: 18px 32px; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid var(--pink); }
-  .brand { display: flex; align-items: center; gap: 12px; }
-  .brand-dot { width: 34px; height: 34px; background: var(--pink); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; color: #fff; }
-  .brand-name { color: #fff; font-size: 16px; font-weight: 700; }
-  .brand-sub { color: rgba(255,255,255,0.45); font-size: 10px; letter-spacing: 2px; margin-top: 2px; }
-  .header-right { color: rgba(255,255,255,0.5); font-size: 12px; letter-spacing: 1px; }
-
-  /* LAYOUT */
-  .wrap { max-width: 1200px; margin: 0 auto; padding: 24px 20px; }
-  .grid { display: grid; grid-template-columns: 360px 1fr; gap: 20px; }
-  .col-left { display: flex; flex-direction: column; gap: 16px; }
-
-  /* PANEL */
-  .panel { background: var(--surface); border-radius: 14px; border: 1px solid var(--border); overflow: hidden; }
-  .panel-head { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
-  .panel-icon { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
-  .panel-head h3 { font-size: 13px; font-weight: 700; color: var(--navy); letter-spacing: 0.5px; }
-  .panel-body { padding: 18px; }
-
-  /* SECTION TAG */
-  .stag { font-size: 10px; font-weight: 700; letter-spacing: 2px; color: var(--pink); margin-bottom: 4px; }
-  .sub-tag { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--soft); margin: 14px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
-
-  /* FIELDS */
-  .field { margin-bottom: 13px; }
-  .field label { display: block; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--soft); margin-bottom: 5px; }
-  .field-row { display: flex; align-items: center; gap: 8px; }
-  input[type=range] { -webkit-appearance: none; width: 100%; height: 4px; background: var(--border); border-radius: 4px; outline: none; }
-  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 15px; height: 15px; border-radius: 50%; background: var(--pink); cursor: pointer; box-shadow: 0 1px 4px rgba(232,69,122,.4); }
-  .fval { min-width: 82px; text-align: right; font-size: 14px; font-weight: 700; color: var(--navy); font-variant-numeric: tabular-nums; }
-  .calc-val { font-size: 16px; font-weight: 900; color: var(--navy); font-variant-numeric: tabular-nums; margin-top: 2px; }
-
-  /* YEAR BONUS GRID */
-  .year-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
-  .year-card { background: var(--bg); border-radius: 10px; border: 1px solid var(--border); padding: 10px 12px; }
-  .year-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; color: var(--soft); margin-bottom: 4px; }
-  .year-val { font-size: 15px; font-weight: 900; color: var(--navy); font-variant-numeric: tabular-nums; }
-  .year-pct { font-size: 10px; color: var(--soft); margin-top: 1px; }
-  .year-total { background: var(--pink-pale); border: 1px solid var(--pink); border-radius: 10px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
-  .year-total-label { font-size: 11px; font-weight: 700; color: var(--pink); }
-  .year-total-val { font-size: 16px; font-weight: 900; color: var(--pink); font-variant-numeric: tabular-nums; }
-
-  /* KPI ROW */
-  .kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
-  .kpi { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); padding: 14px 16px; position: relative; overflow: hidden; }
-  .kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
-  .kpi.hq::before { background: var(--pink); }
-  .kpi.partner::before { background: var(--blue); }
-  .kpi.both::before { background: var(--teal); }
-  .kpi-label { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--soft); margin-bottom: 6px; }
-  .kpi-val { font-size: 22px; font-weight: 900; font-variant-numeric: tabular-nums; line-height: 1; margin-bottom: 3px; }
-  .kpi-val.pink { color: var(--pink); }
-  .kpi-val.blue { color: var(--blue); }
-  .kpi-val.teal { color: var(--teal); }
-  .kpi-sub { font-size: 10px; color: var(--soft); }
-
-  /* CHART */
-  .chart-wrap { height: 260px; position: relative; }
-
-  /* TABLE */
-  .tbl-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
-  table { width: 100%; border-collapse: collapse; font-size: 11px; }
-  thead th { background: var(--navy); color: #fff; padding: 8px 10px; text-align: right; font-size: 10px; font-weight: 600; letter-spacing: .5px; }
-  thead th:first-child { text-align: left; }
-  tbody td { padding: 8px 10px; text-align: right; border-bottom: 1px solid var(--border); font-variant-numeric: tabular-nums; font-weight: 500; color: var(--mid); }
-  tbody td:first-child { text-align: left; font-weight: 600; color: var(--navy); }
-  tbody tr:nth-child(even) td { background: #FAFAFA; }
-  tbody tr.yr-row td { background: #F0F4FF !important; font-weight: 700; color: var(--navy); border-top: 2px solid var(--blue); }
-
-  /* VERDICT */
-  .verdict { border-radius: 12px; padding: 14px 18px; margin-top: 14px; display: flex; gap: 12px; align-items: flex-start; }
-  .verdict.ok { background: #E8F5EE; border: 1px solid #A8DFC0; }
-  .verdict.warn { background: #FFF8E8; border: 1px solid #F2D87A; }
-  .verdict.bad { background: #FFECEC; border: 1px solid #F2AAAA; }
-  .v-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
-  .v-title { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
-  .v-text { font-size: 11px; color: var(--mid); line-height: 1.8; }
-
-  /* DIVIDER */
-  .divider { height: 1px; background: var(--border); margin: 14px 0; }
-
-  @media (max-width: 900px) {
-    .grid { grid-template-columns: 1fr; }
-    .kpi-row { grid-template-columns: 1fr 1fr; }
-  }
+:root{
+  --primary:#2196F3;--primary-dark:#1565C0;--accent:#FF9800;
+  --green:#4CAF50;--red:#F44336;--purple:#9C27B0;
+  --bg:#f5f8fc;--card:#fff;--border:#e0e7ef;
+  --hq:#1565C0;--ps:#2E7D32;
+}
+body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:#222;}
+.container{max-width:1100px;margin:0 auto;padding:16px;}
+.plan-toggle{display:flex;gap:12px;margin-bottom:20px;}
+.plan-btn{flex:1;padding:14px 8px;border:2px solid var(--border);border-radius:10px;background:#fff;font-size:1.05rem;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;}
+.plan-btn.active-390{border-color:#2196F3;background:#e3f2fd;color:#1565C0;}
+.plan-btn.active-590{border-color:#9C27B0;background:#f3e5f5;color:#6A1B9A;}
+.fee-card{background:#fff;border-radius:12px;border:1px solid var(--border);padding:18px 22px;margin-bottom:18px;display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.fee-item{text-align:center;}
+.fee-item .label{font-size:.85rem;color:#666;margin-bottom:4px;}
+.fee-item .value{font-size:1.4rem;font-weight:700;}
+.fee-item.franchise .value{color:#1565C0;}
+.fee-item.deposit .value{color:#FF9800;}
+.fee-item.split .value{font-size:1.1rem;}
+.panel{background:#fff;border-radius:12px;border:1px solid var(--border);padding:18px 22px;margin-bottom:18px;}
+.panel h3{margin:0 0 14px;font-size:1rem;color:#444;border-bottom:1px solid var(--border);padding-bottom:8px;}
+.ctrl-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
+.ctrl-row label{min-width:160px;font-size:.9rem;color:#555;}
+.ctrl-row input[type=range]{flex:1;min-width:140px;}
+.ctrl-row .val{min-width:90px;text-align:right;font-weight:700;font-size:.95rem;}
+.ctrl-row input[type=number]{width:100px;padding:4px 8px;border:1px solid #ccc;border-radius:6px;font-size:.9rem;}
+.pnl-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
+.pnl-box{background:#fff;border-radius:12px;border:1px solid var(--border);padding:16px 18px;}
+.pnl-box h4{margin:0 0 10px;font-size:.95rem;font-weight:700;}
+.pnl-box.hq h4{color:var(--hq);}
+.pnl-box.ps h4{color:var(--ps);}
+table.pnl{width:100%;border-collapse:collapse;font-size:.88rem;}
+table.pnl td{padding:5px 4px;border-bottom:1px solid #f0f0f0;}
+table.pnl td:last-child{text-align:right;font-weight:600;}
+table.pnl tr.total td{border-top:2px solid #ccc;font-weight:700;font-size:.95rem;padding-top:7px;}
+table.pnl tr.pos td:last-child{color:#2E7D32;}
+table.pnl tr.neg td:last-child{color:#C62828;}
+table.pnl tr.hl td{background:#fffde7;}
+.incentive-badge{padding:12px 18px;border-radius:10px;margin-bottom:16px;font-size:.95rem;font-weight:600;text-align:center;}
+.incentive-badge.none{background:#fff3e0;color:#e65100;border:1px solid #ffcc80;}
+.incentive-badge.hit80{background:#e8f5e9;color:#1b5e20;border:1px solid #a5d6a7;}
+.incentive-badge.hit100{background:#e3f2fd;color:#0d47a1;border:1px solid #90caf9;}
+.chart-box{background:#fff;border-radius:12px;border:1px solid var(--border);padding:18px;margin-bottom:18px;}
+.chart-box h3{margin:0 0 12px;font-size:1rem;color:#444;}
+.arb-box{background:#fff;border-radius:12px;border:1px solid var(--border);padding:18px 22px;margin-bottom:18px;}
+.arb-box h3{margin:0 0 12px;font-size:1rem;color:#444;border-bottom:1px solid var(--border);padding-bottom:8px;}
+.arb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.arb-item{text-align:center;padding:10px;background:#f9f9f9;border-radius:8px;}
+.arb-item .al{font-size:.8rem;color:#666;margin-bottom:4px;}
+.arb-item .av{font-size:1.1rem;font-weight:700;}
+.arb-item.good .av{color:#2E7D32;}
+.arb-item.bad .av{color:#C62828;}
+@media(max-width:640px){.pnl-grid{grid-template-columns:1fr;}.arb-grid{grid-template-columns:1fr 1fr;}.fee-card{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
 <body>
+<nav class="topnav">
+  <a href="index.html">品牌故事</a>
+  <a href="compare.html">方案比較</a>
+  <a href="calculator.html">營業額試算</a>
+  <a href="bonus-simulator.html" class="active">獎勵試算</a>
+</nav>
+<main>
+<div class="container">
+<div class="section">
+<h2 style="margin-bottom:6px;">對賭協議獎勵試算</h2>
+<p style="color:#666;margin-bottom:18px;font-size:.92rem;">選擇方案、設定預期營業額，即時查看三年損益與激勵獎金情境。</p>
 
-<div class="header">
-  <div class="brand">
-    <div class="brand-dot">水</div>
-    <div>
-      <div class="brand-name">幸福水屋</div>
-      <div class="brand-sub">HAPPY WATER HOUSE</div>
-    </div>
-  </div>
-  <div class="header-right">業績獎勵方案試算工具 ／ PERFORMANCE BONUS SIMULATOR</div>
+<div class="plan-toggle">
+  <button class="plan-btn active-390" id="btn390" onclick="selectPlan('390')">39萬方案<br><small style="font-weight:400;font-size:.82rem;">加盟主60% / 總部40%</small></button>
+  <button class="plan-btn" id="btn590" onclick="selectPlan('590')">59萬方案<br><small style="font-weight:400;font-size:.82rem;">加盟主80% / 總部20%</small></button>
 </div>
 
-<div class="wrap">
-  <div class="grid">
-
-    <!-- 左側控制面板 -->
-    <div class="col-left">
-
-      <!-- 加盟主費用 -->
-      <div class="panel">
-        <div class="panel-head">
-          <div class="panel-icon" style="background:#FDE8EF">💰</div>
-          <h3>費用設定</h3>
-        </div>
-        <div class="panel-body">
-          <div class="stag">加盟主費用</div>
-          <div class="field">
-            <label>加盟金（不退）</label>
-            <div class="field-row">
-              <input type="range" id="franchiseFee" min="0" max="200000" step="5000" value="100000" oninput="calc()">
-              <span class="fval" id="franchiseFee-v">100,000</span>
-            </div>
-          </div>
-          <div class="field">
-            <label>設備費（加盟主六成）</label>
-            <div class="calc-val" id="equipFee-v">528,000</div>
-            <div style="font-size:10px;color:var(--soft);margin-top:2px">880,000 × 60%，固定值</div>
-          </div>
-          <div class="field">
-            <label>加盟主總投入</label>
-            <div class="calc-val" id="totalIn-v" style="color:var(--pink)">628,000</div>
-          </div>
-          <div class="divider"></div>
-          <div class="stag">總部費用</div>
-          <div class="field">
-            <label>總部一次性成本（機器＋教育訓練）</label>
-            <div class="field-row">
-              <input type="range" id="hqCost" min="100000" max="800000" step="10000" value="400000" oninput="calc()">
-              <span class="fval" id="hqCost-v">400,000</span>
-            </div>
-          </div>
-          <div class="field">
-            <label>總部起始損益（加盟金＋設備費 − 一次性成本）</label>
-            <div class="calc-val" id="hqStart-v" style="color:var(--green)">+228,000</div>
-          </div>
-          <div class="divider"></div>
-          <div class="stag">分潤設定</div>
-          <div class="field">
-            <label>加盟主分潤比例</label>
-            <div class="field-row">
-              <input type="range" id="split" min="50" max="70" step="5" value="60" oninput="calc()">
-              <span class="fval" id="split-v">60%</span>
-            </div>
-          </div>
-          <div class="field">
-            <label>月場地成本（加盟主自付）</label>
-            <div class="field-row">
-              <input type="range" id="monthlyCost" min="3000" max="20000" step="500" value="7000" oninput="calc()">
-              <span class="fval" id="monthlyCost-v">7,000</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 四年獎勵設定 -->
-      <div class="panel">
-        <div class="panel-head">
-          <div class="panel-icon" style="background:#E3F7ED">🎁</div>
-          <h3>四年階梯獎勵設定</h3>
-        </div>
-        <div class="panel-body">
-          <div class="field">
-            <label>獎勵總上限（設備費 528,000 的幾成）</label>
-            <div class="field-row">
-              <input type="range" id="bonusPct" min="10" max="100" step="5" value="50" oninput="calc()">
-              <span class="fval" id="bonusPct-v">50%</span>
-            </div>
-            <div style="font-size:10px;color:var(--soft);margin-top:4px">獎勵總額：<span id="bonusTotal-v" style="font-weight:700;color:var(--navy)">264,000</span></div>
-          </div>
-          <div class="field">
-            <label>月營業額門檻（達標才發當年獎勵）</label>
-            <div class="field-row">
-              <input type="range" id="threshold" min="10000" max="80000" step="1000" value="30000" oninput="calc()">
-              <span class="fval" id="threshold-v">30,000</span>
-            </div>
-          </div>
-          <div class="divider"></div>
-          <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:10px">各年獎勵比重</div>
-          <div class="field">
-            <label>第1年佔比</label>
-            <div class="field-row">
-              <input type="range" id="r1" min="5" max="50" step="1" value="20" oninput="syncRatios(1)">
-              <span class="fval" id="r1-v">20%</span>
-            </div>
-          </div>
-          <div class="field">
-            <label>第2年佔比</label>
-            <div class="field-row">
-              <input type="range" id="r2" min="5" max="50" step="1" value="25" oninput="syncRatios(2)">
-              <span class="fval" id="r2-v">25%</span>
-            </div>
-          </div>
-          <div class="field">
-            <label>第3年佔比</label>
-            <div class="field-row">
-              <input type="range" id="r3" min="5" max="50" step="1" value="28" oninput="syncRatios(3)">
-              <span class="fval" id="r3-v">28%</span>
-            </div>
-          </div>
-          <div class="field">
-            <label>第4年佔比（自動補足至100%）</label>
-            <div class="field-row">
-              <input type="range" id="r4" min="5" max="50" step="1" value="27" disabled style="opacity:0.4">
-              <span class="fval" id="r4-v" style="color:var(--soft)">27%</span>
-            </div>
-          </div>
-
-          <!-- 年度獎勵金額顯示 -->
-          <div class="year-grid" id="yearCards">
-            <div class="year-card">
-              <div class="year-label">第 1 年獎勵</div>
-              <div class="year-val" id="b1-v">52,800</div>
-              <div class="year-pct" id="b1-pct">20%</div>
-            </div>
-            <div class="year-card">
-              <div class="year-label">第 2 年獎勵</div>
-              <div class="year-val" id="b2-v">66,000</div>
-              <div class="year-pct" id="b2-pct">25%</div>
-            </div>
-            <div class="year-card">
-              <div class="year-label">第 3 年獎勵</div>
-              <div class="year-val" id="b3-v">73,920</div>
-              <div class="year-pct" id="b3-pct">28%</div>
-            </div>
-            <div class="year-card">
-              <div class="year-label">第 4 年獎勵</div>
-              <div class="year-val" id="b4-v">71,280</div>
-              <div class="year-pct" id="b4-pct">27%</div>
-            </div>
-          </div>
-          <div class="year-total">
-            <span class="year-total-label">四年獎勵合計</span>
-            <span class="year-total-val" id="bonusTotalDisplay">264,000</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 試算月營業額 -->
-      <div class="panel">
-        <div class="panel-head">
-          <div class="panel-icon" style="background:#E8EEF8">📊</div>
-          <h3>試算情境</h3>
-        </div>
-        <div class="panel-body">
-          <div class="field">
-            <label>假設月營業額（試算用）</label>
-            <div class="field-row">
-              <input type="range" id="monthlyRev" min="5000" max="80000" step="1000" value="35000" oninput="calc()">
-              <span class="fval" id="monthlyRev-v">35,000</span>
-            </div>
-          </div>
-          <div id="threshold-status" style="margin-top:8px;padding:8px 12px;border-radius:8px;font-size:11px;font-weight:700">
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- 右側結果 -->
-    <div>
-
-      <!-- KPI -->
-      <div class="kpi-row">
-        <div class="kpi hq">
-          <div class="kpi-label">總部攤提轉正</div>
-          <div class="kpi-val pink" id="kpi-breakeven">—</div>
-          <div class="kpi-sub">從虧損到回本的月數</div>
-        </div>
-        <div class="kpi partner">
-          <div class="kpi-label">加盟主四年賺回</div>
-          <div class="kpi-val blue" id="kpi-partnerNet">—</div>
-          <div class="kpi-sub">四年分潤＋獎勵總收入</div>
-        </div>
-        <div class="kpi both">
-          <div class="kpi-label">總部四年淨收益</div>
-          <div class="kpi-val teal" id="kpi-hqNet">—</div>
-          <div class="kpi-sub">扣一次性成本後</div>
-        </div>
-      </div>
-
-      <!-- 圖表 -->
-      <div class="panel" style="margin-bottom:16px">
-        <div class="panel-head">
-          <div class="panel-icon" style="background:#E8F5EE">📈</div>
-          <h3>雙軌累計損益圖（月）</h3>
-        </div>
-        <div class="panel-body">
-          <div class="chart-wrap">
-            <canvas id="mainChart"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <!-- 逐年明細表 -->
-      <div class="panel" style="margin-bottom:14px">
-        <div class="panel-head">
-          <div class="panel-icon" style="background:#FDE8EF">📋</div>
-          <h3>逐年損益明細</h3>
-        </div>
-        <div class="panel-body" style="padding:0">
-          <div class="tbl-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>年度</th>
-                  <th>月門檻</th>
-                  <th>是否達標</th>
-                  <th>年度獎勵</th>
-                  <th>總部年分潤</th>
-                  <th>總部年淨</th>
-                  <th>總部累計</th>
-                  <th>加盟主年收</th>
-                  <th>加盟主累計</th>
-                </tr>
-              </thead>
-              <tbody id="mainTable"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- 評估 -->
-      <div id="verdict" class="verdict ok">
-        <div class="v-icon">✅</div>
-        <div>
-          <div class="v-title" id="verdict-title">損益評估</div>
-          <div class="v-text" id="verdict-text">—</div>
-        </div>
-      </div>
-
-    </div>
+<div class="fee-card">
+  <div class="fee-item franchise">
+    <div class="label">加盟金（一次性，不退）</div>
+    <div class="value" id="fc-franchise">$390,000</div>
+  </div>
+  <div class="fee-item deposit">
+    <div class="label">保證金（合約期滿退回）</div>
+    <div class="value">$80,000</div>
+  </div>
+  <div class="fee-item split" style="grid-column:1/-1;">
+    <div class="label">分潤比例</div>
+    <div class="value" id="fc-split">加盟主 60% ／ 總部 40%</div>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<div class="panel">
+  <h3>📋 月費設定</h3>
+  <div class="ctrl-row">
+    <label>品牌權利金（月，含稅）</label>
+    <input type="range" id="sl-royalty" min="0" max="2000" step="10" value="630" oninput="onSlide()">
+    <span class="val" id="vl-royalty">$630</span>
+  </div>
+  <div class="ctrl-row">
+    <label>場地成本（月）</label>
+    <input type="range" id="sl-venue" min="0" max="30000" step="500" value="7000" oninput="onSlide()">
+    <span class="val" id="vl-venue">$7,000</span>
+  </div>
+  <div class="ctrl-row">
+    <label>工資補助（月，總部→加盟主）</label>
+    <input type="range" id="sl-wage" min="0" max="10000" step="500" value="4000" oninput="onSlide()">
+    <span class="val" id="vl-wage">$4,000</span>
+  </div>
+</div>
+
+<div class="panel">
+  <h3>📈 預期月營業額（三年設定）</h3>
+  <div class="ctrl-row">
+    <label>第一年 月平均營業額</label>
+    <input type="range" id="sl-rev1" min="10000" max="120000" step="1000" value="40000" oninput="onSlide()">
+    <span class="val" id="vl-rev1">$40,000</span>
+  </div>
+  <div class="ctrl-row">
+    <label>第二年 月平均營業額</label>
+    <input type="range" id="sl-rev2" min="10000" max="120000" step="1000" value="50000" oninput="onSlide()">
+    <span class="val" id="vl-rev2">$50,000</span>
+  </div>
+  <div class="ctrl-row">
+    <label>第三年 月平均營業額</label>
+    <input type="range" id="sl-rev3" min="10000" max="120000" step="1000" value="60000" oninput="onSlide()">
+    <span class="val" id="vl-rev3">$60,000</span>
+  </div>
+</div>
+
+<div class="panel">
+  <h3>🏆 激勵獎金門檻設定</h3>
+  <div class="ctrl-row">
+    <label>100% 退還門檻（月營業額）</label>
+    <input type="number" id="in-t100" value="50000" step="1000" oninput="onSlide()">
+    <span style="font-size:.85rem;color:#888;">月均達此值→退100%加盟金</span>
+  </div>
+  <div class="ctrl-row">
+    <label>80% 退還門檻（月營業額）</label>
+    <input type="number" id="in-t80" value="40000" step="1000" oninput="onSlide()">
+    <span style="font-size:.85rem;color:#888;">月均達此值（未達100%）→退80%加盟金</span>
+  </div>
+  <p style="font-size:.82rem;color:#888;margin:6px 0 0;">＊僅第一年月平均達標才觸發激勵獎金；第一年若未達標，往後年度不補發。</p>
+</div>
+
+<div class="incentive-badge none" id="incBadge">— 激勵獎金計算中 —</div>
+
+<div class="pnl-grid">
+  <div class="pnl-box hq">
+    <h4>🏢 總部 損益</h4>
+    <table class="pnl" id="tbl-hq"></table>
+  </div>
+  <div class="pnl-box ps">
+    <h4>👤 加盟主 損益</h4>
+    <table class="pnl" id="tbl-ps"></table>
+  </div>
+</div>
+
+<div class="chart-box">
+  <h3>📊 36個月累計損益走勢</h3>
+  <canvas id="myChart" height="100"></canvas>
+</div>
+
+<div class="arb-box">
+  <h3>💰 總部套利分析（第一年月均 vs. 3% 定存）</h3>
+  <div class="arb-grid" id="arbGrid"></div>
+</div>
+
+</div>
+</div>
+</main>
+<footer class="pagefoot">
+  <p>© 2025 幸福水屋 | 此工具僅供內部業務培訓參考使用</p>
+</footer>
+<script src="assets/nav.js"></script>
 <script>
-const EQUIP_FEE = 528000;
-let mainChart = null;
+const PLANS = {
+  '390': { franchise: 390000, ps: 0.60, hs: 0.40, label: '39萬方案' },
+  '590': { franchise: 590000, ps: 0.80, hs: 0.20, label: '59萬方案' }
+};
+let currentPlan = '390';
+let myChart = null;
 
-function fmt(n) {
-  const v = Math.round(n);
-  return (v < 0 ? '−' : '') + Math.abs(v).toLocaleString('zh-TW');
-}
-function fmtSign(n) {
-  const v = Math.round(n);
-  return (v >= 0 ? '+' : '−') + Math.abs(v).toLocaleString('zh-TW');
-}
-
-function syncRatios(changed) {
-  const r1 = +document.getElementById('r1').value;
-  const r2 = +document.getElementById('r2').value;
-  const r3 = +document.getElementById('r3').value;
-  const used = r1 + r2 + r3;
-  const r4 = Math.max(5, 100 - used);
-  document.getElementById('r4').value = r4;
-  document.getElementById('r1-v').textContent = r1 + '%';
-  document.getElementById('r2-v').textContent = r2 + '%';
-  document.getElementById('r3-v').textContent = r3 + '%';
-  document.getElementById('r4-v').textContent = r4 + '%';
+function selectPlan(p) {
+  currentPlan = p;
+  var plan = PLANS[p];
+  document.getElementById('btn390').className = 'plan-btn' + (p==='390' ? ' active-390' : '');
+  document.getElementById('btn590').className = 'plan-btn' + (p==='590' ? ' active-590' : '');
+  document.getElementById('fc-franchise').textContent = '$' + plan.franchise.toLocaleString();
+  document.getElementById('fc-split').textContent = '加盟主 ' + (plan.ps*100).toFixed(0) + '% ／ 總部 ' + (plan.hs*100).toFixed(0) + '%';
   calc();
 }
 
+function fmtAbs(n) { return Math.round(Math.abs(n)).toLocaleString(); }
+function fmt(n) { return (n >= 0 ? '+' : '') + Math.round(n).toLocaleString(); }
+function row(label, val, cls) {
+  cls = cls || '';
+  return '<tr class="' + cls + '"><td>' + label + '</td><td>' + val + '</td></tr>';
+}
+
 function calc() {
-  // 讀取所有參數
-  const franchiseFee = +document.getElementById('franchiseFee').value;
-  const hqCost      = +document.getElementById('hqCost').value;
-  const splitPct    = +document.getElementById('split').value / 100;
-  const monthlyCost = +document.getElementById('monthlyCost').value;
-  const bonusPct    = +document.getElementById('bonusPct').value / 100;
-  const threshold   = +document.getElementById('threshold').value;
-  const monthlyRev  = +document.getElementById('monthlyRev').value;
-  const r1 = +document.getElementById('r1').value;
-  const r2 = +document.getElementById('r2').value;
-  const r3 = +document.getElementById('r3').value;
-  const r4 = Math.max(5, 100 - r1 - r2 - r3);
+  var plan = PLANS[currentPlan];
+  var fr   = plan.franchise;
+  var ps   = plan.ps;
+  var hs   = plan.hs;
 
-  const hqSplit     = 1 - splitPct;
-  const partnerIn   = franchiseFee + EQUIP_FEE;
-  // 總部起點：加盟金＋設備費全額收入，扣一次性成本
-  const hqStart     = franchiseFee + EQUIP_FEE - hqCost;
-  const bonusTotal  = Math.round(EQUIP_FEE * bonusPct);
+  var royalty = parseInt(document.getElementById('sl-royalty').value) || 0;
+  var venue   = parseInt(document.getElementById('sl-venue').value) || 0;
+  var wage    = parseInt(document.getElementById('sl-wage').value) || 0;
+  var rev1    = parseInt(document.getElementById('sl-rev1').value) || 0;
+  var rev2    = parseInt(document.getElementById('sl-rev2').value) || 0;
+  var rev3    = parseInt(document.getElementById('sl-rev3').value) || 0;
+  var t100    = parseInt(document.getElementById('in-t100').value) || 50000;
+  var t80     = parseInt(document.getElementById('in-t80').value) || 40000;
 
-  // 計算各年獎勵
-  const ratios = [r1/100, r2/100, r3/100, r4/100];
-  let bonuses = ratios.map(r => Math.round(bonusTotal * r));
-  // 調整第4年確保合計
-  bonuses[3] = bonusTotal - bonuses[0] - bonuses[1] - bonuses[2];
+  var inc100 = fr;
+  var inc80  = Math.round(fr * 0.8);
+  var yr1_100 = rev1 >= t100;
+  var yr1_80  = rev1 >= t80 && !yr1_100;
+  var iAmt   = yr1_100 ? inc100 : yr1_80 ? inc80 : 0;
+  var iPct   = yr1_100 ? 100 : yr1_80 ? 80 : 0;
 
-  // 更新左側顯示
-  document.getElementById('franchiseFee-v').textContent = fmt(franchiseFee);
-  document.getElementById('equipFee-v').textContent = fmt(EQUIP_FEE);
-  document.getElementById('totalIn-v').textContent = fmt(partnerIn);
-  document.getElementById('hqCost-v').textContent = fmt(hqCost);
-  document.getElementById('hqStart-v').textContent = fmt(hqStart);
-  document.getElementById('hqStart-v').style.color = hqStart >= 0 ? 'var(--green)' : 'var(--red)';
-  document.getElementById('split-v').textContent = Math.round(splitPct * 100) + '%';
-  document.getElementById('monthlyCost-v').textContent = fmt(monthlyCost);
-  document.getElementById('bonusPct-v').textContent = Math.round(bonusPct * 100) + '%';
-  document.getElementById('bonusTotal-v').textContent = fmt(bonusTotal);
-  document.getElementById('threshold-v').textContent = fmt(threshold);
-  document.getElementById('monthlyRev-v').textContent = fmt(monthlyRev);
-
-  // 獎勵卡片
-  ['b1','b2','b3','b4'].forEach((id, i) => {
-    document.getElementById(id+'-v').textContent = fmt(bonuses[i]);
-    document.getElementById(id+'-pct').textContent = (((i < 3 ? ratios[i] : r4/100) * 100) | 0) + '%';
-  });
-  document.getElementById('bonusTotalDisplay').textContent = fmt(bonusTotal);
-  document.getElementById('r4-v').textContent = r4 + '%';
-
-  // 門檻狀態
-  const isAbove = monthlyRev >= threshold;
-  const statusEl = document.getElementById('threshold-status');
-  statusEl.textContent = isAbove
-    ? `✅ 月營 ${fmt(monthlyRev)} 已達門檻 ${fmt(threshold)}，每年獎勵正常發放`
-    : `❌ 月營 ${fmt(monthlyRev)} 未達門檻 ${fmt(threshold)}，獎勵全年不發`;
-  statusEl.style.background = isAbove ? '#E8F5EE' : '#FFECEC';
-  statusEl.style.color = isAbove ? '#2A7A52' : '#C03030';
-
-  // 月度試算（48個月）
-  let hqCum = hqStart;
-  let partnerCum = 0;  // 加盟主從0開始，只看賺回多少
-  const hqData = [], partnerData = [], labels = [];
-  let hqBreakeven = null;
-
-  for (let m = 1; m <= 48; m++) {
-    const yr = Math.ceil(m / 12);
-    const bonus = isAbove ? bonuses[yr - 1] / 12 : 0;
-    hqCum += monthlyRev * hqSplit - bonus;
-    partnerCum += monthlyRev * splitPct - monthlyCost + bonus;
-    hqData.push(Math.round(hqCum));
-    partnerData.push(Math.round(partnerCum));
-    labels.push(m + '月');
-    if (hqBreakeven === null && hqCum >= 0) hqBreakeven = m;
+  var badge = document.getElementById('incBadge');
+  if (iAmt > 0) {
+    badge.className = 'incentive-badge ' + (yr1_100 ? 'hit100' : 'hit80');
+    badge.textContent = '🎉 第一年月均 $' + rev1.toLocaleString() + ' ≥ $' + (yr1_100 ? t100 : t80).toLocaleString() + '，觸發 ' + iPct + '% 激勵獎金 → 退還 $' + iAmt.toLocaleString();
+  } else {
+    badge.className = 'incentive-badge none';
+    badge.textContent = '📌 第一年月均 $' + rev1.toLocaleString() + ' 未達門檻（$' + t80.toLocaleString() + '），無激勵獎金';
   }
 
-  // 年度明細表
-  const tbody = document.getElementById('mainTable');
-  tbody.innerHTML = '';
-  let hqCumY = hqStart, partnerCumY = 0;
-
-  for (let yr = 1; yr <= 4; yr++) {
-    const hqYearRev  = monthlyRev * hqSplit * 12;
-    const partYearRev = (monthlyRev * splitPct - monthlyCost) * 12;
-    const bonus = isAbove ? bonuses[yr - 1] : 0;
-    const hqYearNet  = hqYearRev - bonus;
-    const partYearNet = partYearRev + bonus;
-
-    hqCumY += hqYearNet;
-    partnerCumY += partYearNet;
-
-    const tr = document.createElement('tr');
-    tr.className = 'yr-row';
-    tr.innerHTML = `
-      <td>第 ${yr} 年</td>
-      <td>${fmt(threshold)}</td>
-      <td style="color:${isAbove?'var(--green)':'var(--red)'}">${isAbove ? '✅ 達標' : '❌ 未達'}</td>
-      <td style="color:var(--green);font-weight:700">${isAbove ? '+'+fmt(bonus) : '—'}</td>
-      <td style="color:var(--pink)">${fmt(hqYearRev)}</td>
-      <td style="color:${hqYearNet>=0?'var(--green)':'var(--red)'}">${fmtSign(hqYearNet)}</td>
-      <td style="color:${hqCumY>=0?'var(--green)':'var(--red)'};font-weight:800">${fmtSign(hqCumY)}</td>
-      <td style="color:var(--blue)">${fmt(partYearNet)}</td>
-      <td style="color:${partnerCumY>=0?'var(--green)':'var(--red)'};font-weight:800">${fmtSign(partnerCumY)}</td>
-    `;
-    tbody.appendChild(tr);
+  /* 三年逐月累計 */
+  var hqData = [];
+  var psData = [];
+  var hqCum = fr;
+  var psCum = 0;
+  for (var m = 1; m <= 36; m++) {
+    var yr  = m <= 12 ? 1 : m <= 24 ? 2 : 3;
+    var rev = yr===1 ? rev1 : yr===2 ? rev2 : rev3;
+    var incThisMonth = (m === 12) ? iAmt : 0;
+    hqCum += rev * hs + royalty - wage - incThisMonth;
+    psCum += rev * ps + wage + incThisMonth - venue - royalty;
+    hqData.push(hqCum);
+    psData.push(psCum);
   }
 
-  // KPI
-  document.getElementById('kpi-breakeven').textContent = hqBreakeven ? '第 ' + hqBreakeven + ' 月' : '48月內未轉正';
-  document.getElementById('kpi-breakeven').style.color = hqBreakeven ? 'var(--pink)' : 'var(--red)';
-  document.getElementById('kpi-partnerNet').textContent = fmtSign(partnerData[47]);
-  document.getElementById('kpi-partnerNet').style.color = partnerData[47] >= 0 ? 'var(--blue)' : 'var(--red)';
-  document.getElementById('kpi-hqNet').textContent = fmtSign(hqData[47]);
-  document.getElementById('kpi-hqNet').style.color = hqData[47] >= 0 ? 'var(--teal)' : 'var(--red)';
+  /* 年度計算 */
+  function calcYear(rev, payInc) {
+    var hqRev   = rev * hs * 12;
+    var hqRoy   = royalty * 12;
+    var hqWage  = wage * 12;
+    var hqInc   = payInc ? iAmt : 0;
+    var hqNet   = hqRev + hqRoy - hqWage - hqInc;
+    var psRev   = rev * ps * 12;
+    var psWage  = wage * 12;
+    var psVenue = venue * 12;
+    var psRoy   = royalty * 12;
+    var psInc   = payInc ? iAmt : 0;
+    var psNet   = psRev + psWage + psInc - psVenue - psRoy;
+    return { hqRev:hqRev, hqRoy:hqRoy, hqWage:hqWage, hqInc:hqInc, hqNet:hqNet,
+             psRev:psRev, psWage:psWage, psVenue:psVenue, psRoy:psRoy, psInc:psInc, psNet:psNet };
+  }
 
-  // 圖表
-  if (mainChart) mainChart.destroy();
-  mainChart = new Chart(document.getElementById('mainChart').getContext('2d'), {
+  var y1 = calcYear(rev1, iAmt > 0);
+  var y2 = calcYear(rev2, false);
+  var y3 = calcYear(rev3, false);
+  var hqTotal3    = y1.hqNet + y2.hqNet + y3.hqNet;
+  var psTotal3    = y1.psNet + y2.psNet + y3.psNet;
+  var hqGrandTotal = fr + hqTotal3;
+  var psNetFinal   = psTotal3 - fr;
+
+  /* 總部損益表 */
+  var hqRows = row('【初始收入】加盟金', '+$' + fr.toLocaleString(), 'hl pos')
+    + row('', '', '')
+    + row('分潤收入（第1年）', '+$' + Math.round(y1.hqRev).toLocaleString(), '')
+    + row('品牌權利金（第1年）', '+$' + Math.round(y1.hqRoy).toLocaleString(), '')
+    + row('工資補助支出（第1年）', '-$' + fmtAbs(y1.hqWage), '')
+    + (iAmt > 0 ? row('激勵獎金支出（第1年末）', '-$' + fmtAbs(y1.hqInc), 'hl') : '')
+    + row('第1年小計', fmt(y1.hqNet), y1.hqNet >= 0 ? 'pos' : 'neg')
+    + row('', '', '')
+    + row('分潤收入（第2年）', '+$' + Math.round(y2.hqRev).toLocaleString(), '')
+    + row('品牌權利金（第2年）', '+$' + Math.round(y2.hqRoy).toLocaleString(), '')
+    + row('工資補助支出（第2年）', '-$' + fmtAbs(y2.hqWage), '')
+    + row('第2年小計', fmt(y2.hqNet), y2.hqNet >= 0 ? 'pos' : 'neg')
+    + row('', '', '')
+    + row('分潤收入（第3年）', '+$' + Math.round(y3.hqRev).toLocaleString(), '')
+    + row('品牌權利金（第3年）', '+$' + Math.round(y3.hqRoy).toLocaleString(), '')
+    + row('工資補助支出（第3年）', '-$' + fmtAbs(y3.hqWage), '')
+    + row('第3年小計', fmt(y3.hqNet), y3.hqNet >= 0 ? 'pos' : 'neg')
+    + row('', '', '')
+    + row('三年營運累計', fmt(hqTotal3), hqTotal3 >= 0 ? 'total pos' : 'total neg')
+    + row('含加盟金 總累計', '+$' + Math.round(hqGrandTotal).toLocaleString(), 'total pos');
+  document.getElementById('tbl-hq').innerHTML = hqRows;
+
+  /* 加盟主損益表 */
+  var psRows = row('【初始支出】加盟金', '-$' + fr.toLocaleString(), 'hl neg')
+    + row('保證金（不計入損益）', '-$80,000', '')
+    + row('', '', '')
+    + row('分潤收入（第1年）', '+$' + Math.round(y1.psRev).toLocaleString(), '')
+    + row('工資補助（第1年）', '+$' + Math.round(y1.psWage).toLocaleString(), '')
+    + (iAmt > 0 ? row('激勵獎金（第1年末）', '+$' + fmtAbs(y1.psInc), 'hl pos') : '')
+    + row('場地成本（第1年）', '-$' + fmtAbs(y1.psVenue), '')
+    + row('品牌權利金（第1年）', '-$' + fmtAbs(y1.psRoy), '')
+    + row('第1年小計', fmt(y1.psNet), y1.psNet >= 0 ? 'pos' : 'neg')
+    + row('', '', '')
+    + row('分潤收入（第2年）', '+$' + Math.round(y2.psRev).toLocaleString(), '')
+    + row('工資補助（第2年）', '+$' + Math.round(y2.psWage).toLocaleString(), '')
+    + row('場地成本（第2年）', '-$' + fmtAbs(y2.psVenue), '')
+    + row('品牌權利金（第2年）', '-$' + fmtAbs(y2.psRoy), '')
+    + row('第2年小計', fmt(y2.psNet), y2.psNet >= 0 ? 'pos' : 'neg')
+    + row('', '', '')
+    + row('分潤收入（第3年）', '+$' + Math.round(y3.psRev).toLocaleString(), '')
+    + row('工資補助（第3年）', '+$' + Math.round(y3.psWage).toLocaleString(), '')
+    + row('場地成本（第3年）', '-$' + fmtAbs(y3.psVenue), '')
+    + row('品牌權利金（第3年）', '-$' + fmtAbs(y3.psRoy), '')
+    + row('第3年小計', fmt(y3.psNet), y3.psNet >= 0 ? 'pos' : 'neg')
+    + row('', '', '')
+    + row('三年營運累計', fmt(psTotal3), psTotal3 >= 0 ? 'total pos' : 'total neg')
+    + row('扣除加盟金後淨損益', fmt(psNetFinal), psNetFinal >= 0 ? 'total pos' : 'total neg');
+  document.getElementById('tbl-ps').innerHTML = psRows;
+
+  /* 圖表 */
+  var labels = [];
+  for (var i = 1; i <= 36; i++) labels.push('M' + i);
+  var ctx = document.getElementById('myChart').getContext('2d');
+  if (myChart) myChart.destroy();
+  myChart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels,
+      labels: labels,
       datasets: [
-        {
-          label: '總部累計損益',
-          data: hqData,
-          borderColor: '#E8457A',
-          backgroundColor: 'rgba(232,69,122,0.07)',
-          borderWidth: 2.5, tension: 0.3, fill: true,
-          pointRadius: 0, pointHoverRadius: 4
-        },
-        {
-          label: '加盟主累計損益',
-          data: partnerData,
-          borderColor: '#3D6CB5',
-          backgroundColor: 'rgba(61,108,181,0.06)',
-          borderWidth: 2.5, tension: 0.3, fill: true,
-          pointRadius: 0, pointHoverRadius: 4
-        }
+        { label: '總部累計', data: hqData, borderColor: '#1565C0', backgroundColor: 'rgba(21,101,192,.08)', fill: true, tension: .3, pointRadius: 2 },
+        { label: '加盟主累計', data: psData, borderColor: '#2E7D32', backgroundColor: 'rgba(46,125,50,.08)', fill: true, tension: .3, pointRadius: 2 }
       ]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
+      responsive: true,
+      interaction: { mode:'index', intersect:false },
       plugins: {
-        legend: { position: 'top', labels: { font: { size: 11 }, padding: 14 } },
-        tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmt(c.raw) } },
-        annotation: {}
+        legend: { position:'top' },
+        tooltip: { callbacks: { label: function(c) { return c.dataset.label + ': $' + Math.round(c.parsed.y).toLocaleString(); } } }
       },
-      scales: {
-        x: { grid: { display: false }, ticks: { maxTicksLimit: 12, font: { size: 10 } } },
-        y: {
-          grid: { color: 'rgba(0,0,0,0.04)' },
-          ticks: { font: { size: 10 }, callback: v => fmt(v) }
-        }
-      }
+      scales: { y: { ticks: { callback: function(v) { return '$' + (v/10000).toFixed(0) + '萬'; } } } }
     }
   });
 
-  // Verdict
-  const vEl = document.getElementById('verdict');
-  const vTitle = document.getElementById('verdict-title');
-  const vText = document.getElementById('verdict-text');
-  const hqFinal = hqData[47];
-  const partnerFinal = partnerData[47];
-
-  const partnerYearAvg = Math.round(partnerFinal / 4);
-  const hqOk = hqFinal >= hqStart; // 總部分潤至少要正
-  const partnerOk = partnerFinal > 0;
-
-  if (hqFinal >= 0 && partnerOk) {
-    vEl.className = 'verdict ok';
-    document.querySelector('#verdict .v-icon').textContent = '✅';
-    vTitle.textContent = '雙贏區間';
-    vText.innerHTML = `總部收取加盟金 ${fmt(franchiseFee)}＋設備費 ${fmt(EQUIP_FEE)}，扣一次性成本 ${fmt(hqCost)} 後，
-    起始即有 <b>${fmt(hqStart)}</b> 入帳。每月分潤 ${fmt(Math.round(monthlyRev * hqSplit))}，
-    四年再發獎勵 ${fmt(bonusTotal)}，四年總部累計 <b>${fmt(hqFinal)}</b>。<br>
-    加盟主四年共賺回 <b>${fmt(partnerFinal)}</b>（分潤＋獎勵），年均約 ${fmt(partnerYearAvg)}。`;
-  } else if (hqFinal < 0) {
-    vEl.className = 'verdict warn';
-    document.querySelector('#verdict .v-icon').textContent = '⚠️';
-    vTitle.textContent = '總部獎勵發太多';
-    vText.innerHTML = `總部起始 ${fmt(hqStart)}，但四年發出獎勵 ${fmt(bonusTotal)} 超過分潤收入，
-    四年累計剩 <b>${fmt(hqFinal)}</b>。建議降低獎勵上限比例，或提高月門檻。`;
-  } else {
-    vEl.className = 'verdict warn';
-    document.querySelector('#verdict .v-icon').textContent = '⚠️';
-    vTitle.textContent = '加盟主吸引力不足';
-    vText.innerHTML = `月營業額 ${fmt(monthlyRev)} 下，加盟主四年僅賺回 <b>${fmt(partnerFinal)}</b>，
-    相對總投入 ${fmt(partnerIn)} 吸引力偏低。建議提高獎勵比例或降低門檻。`;
-  }
+  /* 套利分析 */
+  var bankReturn3yr = Math.round((fr + 80000) * 0.03 * 3);
+  var hqROI3 = ((hqGrandTotal - fr) / fr * 100).toFixed(1);
+  var hqAnnualReturn = (hqGrandTotal / 3 / fr * 100).toFixed(1);
+  document.getElementById('arbGrid').innerHTML =
+    '<div class="arb-item"><div class="al">銀行3%定存（加盟金+保證金，3年）</div><div class="av">$' + bankReturn3yr.toLocaleString() + '</div></div>'
+    + '<div class="arb-item ' + (hqTotal3 >= bankReturn3yr ? 'good' : 'bad') + '"><div class="al">總部三年營運淨收（不含加盟金）</div><div class="av">' + fmt(hqTotal3) + '</div></div>'
+    + '<div class="arb-item good"><div class="al">總部含加盟金 三年總累計</div><div class="av">$' + Math.round(hqGrandTotal).toLocaleString() + '</div></div>'
+    + '<div class="arb-item ' + (+hqROI3 >= 0 ? 'good' : 'bad') + '"><div class="al">三年ROI（vs 加盟金）</div><div class="av">' + hqROI3 + '%</div></div>'
+    + '<div class="arb-item good"><div class="al">年均報酬率（含加盟金）</div><div class="av">' + hqAnnualReturn + '%</div></div>'
+    + '<div class="arb-item ' + (hqTotal3 >= bankReturn3yr ? 'good' : 'bad') + '"><div class="al">優於定存？</div><div class="av">' + (hqTotal3 >= bankReturn3yr ? '✅ 是' : '❌ 否') + '</div></div>';
 }
 
-window.addEventListener('load', () => {
-  syncRatios(0);
+function onSlide() {
+  ['royalty','venue','wage','rev1','rev2','rev3'].forEach(function(id) {
+    var v = parseInt(document.getElementById('sl-' + id).value) || 0;
+    document.getElementById('vl-' + id).textContent = '$' + v.toLocaleString();
+  });
+  calc();
+}
+
+window.addEventListener('load', function() {
+  selectPlan('390');
 });
 </script>
-  <script src="assets/nav.js"></script>
 </body>
 </html>
